@@ -1,5 +1,7 @@
 import '../models/post.dart';
 
+
+
 List<Post> getAllPosts() {
 
   return [
@@ -11,6 +13,12 @@ List<Post> getAllPosts() {
           "Descobri um restaurante incrível hoje, perfeito para trabalhar e relaxar ☕.📍 Terraço Jardins",
       rating: 5,
       likes: 32,
+
+      imagens: [
+        "assets/images/places/bar_tan_tan_1.jpg",
+        "assets/images/places/bar_tan_tan_2.jpg",
+        "assets/images/places/bar_tan_tan_3.jpg",
+      ],
     ),
 
     Post(
@@ -20,6 +28,13 @@ List<Post> getAllPosts() {
           "Hoje fui conhecer um dos marcos históricos de São Paulo, uma experiência cultural incrível.📍 Catedral da Sé",
       rating: 4,
       likes: 45,
+
+      imagens: [
+        "assets/images/places/catedral_se_1.jpg",
+        "assets/images/places/catedral_se_2.jpg",
+        "assets/images/places/catedral_se_3.jpg",
+      ],
+
     ),
 
     Post(
@@ -29,6 +44,14 @@ List<Post> getAllPosts() {
           "Esse rooftop é simplesmente incrível, com uma vista absurda da cidade.📍 Vista Rooftop Bar",
       rating: 5,
       likes: 12,
+
+      imagens: [
+        "assets/images/places/vista_rooftop_1.jpg",
+        "assets/images/places/vista_rooftop_2.jpg",
+        "assets/images/places/vista_rooftop_3.jpg",
+      ],
+
+
     ),
   ];
 }

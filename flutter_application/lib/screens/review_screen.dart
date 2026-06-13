@@ -1,256 +1,227 @@
 import 'package:flutter/material.dart';
+import '../routes/route_names.dart';
 
-import '../theme/colors.dart';
-import '../widgets/bottom_bar.dart';
-
-class ReviewScreen extends StatefulWidget {
+class ReviewScreen extends StatelessWidget {
   const ReviewScreen({super.key});
 
   @override
-  State<ReviewScreen> createState() =>
-      _ReviewScreenState();
-}
 
-class _ReviewScreenState
-    extends State<ReviewScreen> {
-
-  final TextEditingController reviewController =
-      TextEditingController();
-
-  @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: backgroundAeon,
-
+      backgroundColor: const Color(0xFFF0FFF5),
+      
       appBar: AppBar(
-        title: const Text("Review"),
+        backgroundColor: const Color(0xFFF0FFF5),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+          onPressed: (){
+            Navigator.pushReplacementNamed(
+                    context,
+                    RouteNames.navigation,
+            );
+          },
+        ),
+        title: const Text(
+          "Review",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
         centerTitle: true,
+        actions: [
+          // Avatar fictício 
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.purple[200],
+              child: const Icon(Icons.star, size: 16, color: Color(0xFF9C27B0)),
+            ),
+          )
+        ],
+        // Linha divisória
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.black12,
+            height: 1.0,
+          ),
+        ),
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+            // Título do Estabelecimento
             const Text(
+
               "BAR TAN TAN",
 
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: 0.5,
               ),
             ),
 
             const SizedBox(height: 16),
 
+            // Estrelas de Avaliação (Vazias)
             Row(
-              children: List.generate(
-                5,
-                (index) => const Icon(
-                  Icons.star_border,
-                  size: 40,
-                  color: Colors.grey,
-                ),
-              ),
+              children: List.generate(5, (index) {
+                return const Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    Icons.star_border,
+                    size: 38,
+                    color: Colors.black45,
+                  ),
+                );
+              }),
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: reviewController,
-
-              maxLines: 6,
-
-              decoration: InputDecoration(
-                hintText:
-                    "O que achou da sua experiência?",
-
-                filled: true,
-                fillColor: Colors.white,
-
-                border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(16),
+            // Caixa de Texto Grande
+            Container(
+              height: 180,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.black12),
+              ),
+              child: const TextField(
+                maxLines: null, // Permite múltiplas linhas
+                decoration: InputDecoration(
+                  hintText: "O que achou da sua experiência?",
+                  hintStyle: TextStyle(color: Colors.black38, fontSize: 14),
+                  border: InputBorder.none,
                 ),
               ),
             ),
 
             const SizedBox(height: 20),
 
+            // Botão Adicionar Fotos e Vídeos (Roxo)
             SizedBox(
               width: double.infinity,
-              height: 50,
-
+              height: 48,
               child: ElevatedButton.icon(
                 onPressed: () {},
-
-                icon: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                ),
-
+                icon: const Icon(Icons.camera_alt_outlined, color: Colors.white, size: 18),
                 label: const Text(
                   "Adicionar Fotos e Vídeos",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color(0xFFA663B5),
-
-                  foregroundColor: Colors.white,
+                  backgroundColor: const Color(0xFF9C47B2), // Roxo do mockup
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  elevation: 0,
                 ),
               ),
             ),
+            const SizedBox(height: 28),
 
-            const SizedBox(height: 24),
-
+            // Subtítulo de Detalhes
             const Text(
-              "Mais detalhes",
-
+              "Quer adicionar mais detalhes?",
               style: TextStyle(
-                color: Colors.grey,
+                fontSize: 14,
+                color: Colors.black54,
+                fontWeight: FontWeight.w500,
               ),
             ),
 
             const SizedBox(height: 12),
 
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: "Valor Gasto",
-              ),
-
-              items: const [
-                DropdownMenuItem(
-                  value: "Até R\$50",
-                  child: Text("Até R\$50"),
-                ),
-
-                DropdownMenuItem(
-                  value: "R\$50 - R\$100",
-                  child: Text("R\$50 - R\$100"),
-                ),
-
-                DropdownMenuItem(
-                  value: "Acima de R\$100",
-                  child: Text("Acima de R\$100"),
-                ),
-              ],
-
-              onChanged: (value) {},
-            ),
-
+            // Lista de Seletores Dinâmicos (Dropdowns Cinzas)
+            buildDropdownField("Valor Gasto"),
+            buildDropdownField("Tempo de Espera"),
+            buildDropdownField("Acessibilidade"),
+            buildDropdownField("Adequado para crianças"),
+            
             const SizedBox(height: 16),
 
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: "Tempo de Espera",
-              ),
-
-              items: const [
-                DropdownMenuItem(
-                  value: "0-10 min",
-                  child: Text("0-10 min"),
-                ),
-
-                DropdownMenuItem(
-                  value: "10-30 min",
-                  child: Text("10-30 min"),
-                ),
-
-                DropdownMenuItem(
-                  value: "30+ min",
-                  child: Text("30+ min"),
-                ),
-              ],
-
-              onChanged: (value) {},
-            ),
-
-            const SizedBox(height: 32),
-
+            // Botão Publicar Final
             SizedBox(
               width: double.infinity,
-              height: 50,
-
+              height: 48,
               child: ElevatedButton(
                 onPressed: () {
-
-                  ScaffoldMessenger.of(
+                  Navigator.pushReplacementNamed(
                     context,
-                  ).showSnackBar(
-
-                    const SnackBar(
-                      content: Text(
-                        "Review publicada!",
-                      ),
-                    ),
+                    RouteNames.navigation,
                   );
-                },
 
+                },
+                
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: purpleAeon,
+                  backgroundColor: const Color(0xFF7B1FA2), // Roxo escuro do mockup
+
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+
+                  ),
+                  elevation: 0,
                 ),
 
                 child: const Text(
+
                   "Publicar",
 
                   style: TextStyle(
                     color: Colors.white,
-                    fontWeight:
-                        FontWeight.bold,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+                
               ),
             ),
+          ],
 
-            const SizedBox(height: 80),
+        ),
+      ),
+    );
+  }
+
+  // Widget auxiliar para estruturar os seletores cinzas com a seta para baixo
+  static Widget buildDropdownField(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        width: double.infinity,
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE0E0E0), // Cinza do mockup
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
           ],
         ),
       ),
-
-      bottomNavigationBar: AeonBottomBar(
-        currentIndex: 2,
-
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(
-                context,
-                '/menu',
-              );
-              break;
-
-            case 1:
-              Navigator.pushReplacementNamed(
-                context,
-                '/mapa',
-              );
-              break;
-
-            case 2:
-              break;
-
-            case 3:
-              Navigator.pushReplacementNamed(
-                context,
-                '/favoritos',
-              );
-              break;
-
-            case 4:
-              Navigator.pushReplacementNamed(
-                context,
-                '/perfil',
-              );
-              break;
-           }
-         },
-        ),
-     );
-    }
+    );
   }
+}

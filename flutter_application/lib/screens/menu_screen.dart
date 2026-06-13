@@ -1,16 +1,40 @@
 import 'package:flutter/material.dart';
-
-import '../theme/colors.dart';
-import '../repositories/post_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/post_card.dart';
-import '../widgets/bottom_bar.dart';
+import '../repositories/post_repository.dart';
+import '../screens/post_detail_screen.dart';
 
 
 class MenuScreen extends StatelessWidget {
 
   const MenuScreen({super.key});
 
+  Future<String> getNomeUsuario() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        return 'Explorador';
+      }
+
+      final document = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!document.exists) {
+        return 'Explorador';
+      }
+
+      return document.data()?['nome'] ?? 'Explorador';
+    } catch (_) {
+      return 'Explorador';
+    }
+  }
+
   @override
+
   Widget build(BuildContext context) {
 
     final posts = getAllPosts();
@@ -20,79 +44,54 @@ class MenuScreen extends StatelessWidget {
 
       appBar: AppBar(
         backgroundColor: Colors.black,
-        centerTitle: true,
+        elevation: 0,
+        centerTitle: false,
 
-        title: const Text(
-          "Olá, Explorador!",
-
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        
-        ),
-      
-      ),
-
-      body: Container(
-        decoration: const BoxDecoration(
-          color: backgroundAeon,
-
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-
-        child: ListView.builder(
-          itemCount: posts.length,
-
-          itemBuilder: (context, index) {
-
-            return PostCard(
-              post: posts[index],
+        title: FutureBuilder<String>(
+          future: getNomeUsuario(),
+          builder: (context, snapshot) {
+            return Text(
+              'Olá, ${snapshot.data ?? "Explorador"}!',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
             );
           },
         ),
+
       ),
-      bottomNavigationBar: AeonBottomBar(
-        currentIndex: 0,
 
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              break;
+      body: Container(
+        color: Colors.black,
 
-            case 1:
-              Navigator.pushNamed(
-                context,
-                '/mapa',
+        child: ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: posts.length,
+          itemBuilder: (_, index) {
+            
+            final post = posts[index];
+
+              return PostCard(
+                post: post,
+                onTap: () {
+                  if (post.nome == "Blair Willows") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const PostDetailScreen(),
+                      ),
+                    );
+                  }
+                },
               );
-              break;
-
-            case 2:
-              Navigator.pushNamed(
-                context,
-                '/review',
-              );
-              break;
-
-            case 3:
-              Navigator.pushNamed(
-                context,
-                '/favoritos',
-              );
-              break;
-
-            case 4:
-              Navigator.pushNamed(
-                context,
-                '/perfil',
-              );
-              break;
-          }
-        },
+          },
+        ),
       ),
+
     );
   }
 }
+

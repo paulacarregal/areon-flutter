@@ -1,64 +1,58 @@
 import 'package:flutter/material.dart';
+import '../widgets/favorite_card.dart';
 
-import '../widgets/bottom_bar.dart';
-
-class FavoritosScreen extends StatelessWidget {
-  const FavoritosScreen({super.key});
+class FavoritesScreen extends StatelessWidget {
+  const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF0FFF5),
+
       appBar: AppBar(
         title: const Text("Favoritos"),
       ),
 
-      body: const Center(
-        child: Text(
-          "Seus Favoritos",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+
+        children: const [
+
+          FavoriteCard(
+            nome: "Terraço Jardins",
+            rating: 5.0,
+            reviews: 1000,
+            preco: "R\$ 200-250",
+            horario: "14:00",
+            image: 'assets/images/places/terraco_jardins_1.jpg',
+
+            
           ),
-        ),
-      ),
 
-      bottomNavigationBar: AeonBottomBar(
-        currentIndex: 3,
+          SizedBox(height: 16),
 
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(
-                context,
-                '/menu',
-              );
-              break;
+          FavoriteCard(
+            nome: "Big Kahuna Burger",
+            rating: 4.5,
+            reviews: 150,
+            preco: "R\$ 50-55",
+            horario: "14:00",
+            image: 'assets/images/places/big_kahuna_1.jpg',
+          ),
 
-            case 1:
-              Navigator.pushReplacementNamed(
-                context,
-                '/mapa',
-              );
-              break;
+          SizedBox(height: 16),
 
-            case 2:
-              Navigator.pushReplacementNamed(
-                context,
-                '/review',
-              );
-              break;
-
-            case 3:
-              break;
-
-            case 4:
-              Navigator.pushReplacementNamed(
-                context,
-                '/perfil',
-              );
-              break;
-          }
-        },
+          FavoriteCard(
+            nome: "Exposição MIS",
+            rating: 4.2,
+            reviews: 500,
+            preco: "R\$ 20-25",
+            horario: "14:00",
+            image: 'assets/images/places/exposição_mis_1.jpg',
+          ),
+          
+        ],
       ),
     );
   }

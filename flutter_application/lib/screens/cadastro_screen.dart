@@ -1,194 +1,186 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../theme/colors.dart';
 
-class CadastroScreen extends StatefulWidget {
-  const CadastroScreen({super.key});
+import '../services/user_service.dart';
 
-  @override
-  State<CadastroScreen> createState() =>
-      _CadastroScreenState();
+class CadastroScreen extends StatefulWidget {
+const CadastroScreen({super.key});
+
+@override
+State<CadastroScreen> createState() => _CadastroScreenState();
 }
 
-class _CadastroScreenState
-    extends State<CadastroScreen> {
+class _CadastroScreenState extends State<CadastroScreen> {
+final TextEditingController nomeController = TextEditingController();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController senhaController = TextEditingController();
 
-  final TextEditingController nomeController =
-      TextEditingController();
+bool carregando = false;
 
-  final TextEditingController emailController =
-      TextEditingController();
+Future<void> cadastrar() async {
+final nome = nomeController.text.trim();
+final email = emailController.text.trim();
+final senha = senhaController.text.trim();
 
-  final TextEditingController senhaController =
-      TextEditingController();
+if (nome.isEmpty || email.isEmpty || senha.isEmpty) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Preencha todos os campos."),
+    ),
+  );
+  return;
+}
 
-  @override
-  Widget build(BuildContext context) {
+if (senha.length < 8) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text(
+        "A senha deve possuir no mínimo 8 caracteres.",
+      ),
+    ),
+  );
+  return;
+}
 
-    return Scaffold(
-      backgroundColor: backgroundAeon,
+setState(() {
+  carregando = true;
+});
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+try {
+  final credential =
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: senha,
+    );
 
-            // cabeçalho
-            Container(
-              width: double.infinity,
-              height: 320,
+    await UserService().createUser(
+      uid: credential.user!.uid,
+      nome: nome,
+      email: email,
+    );
 
-              decoration: const BoxDecoration(
-                color: Colors.black,
+  if (!mounted) return;
 
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                  bottomRight: Radius.circular(80),
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Cadastro realizado com sucesso!"),
+    ),
+  );
+
+  Navigator.pushReplacementNamed(
+    context,
+    '/quiz',
+  );
+} 
+on FirebaseAuthException catch (e) {
+
+  debugPrint('ERRO FIREBASE: ${e.code}');
+  debugPrint('MENSAGEM: ${e.message}');
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        '${e.code} - ${e.message}',
+      ),
+    ),
+  );
+} finally {
+  if (mounted) {
+    setState(() {
+      carregando = false;
+    });
+  }
+}
+
+}
+
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+backgroundColor: AppColors.background,
+body: SingleChildScrollView(
+child: Column(
+children: [
+Container(
+width: double.infinity,
+height: 320,
+decoration: const BoxDecoration(
+color: Colors.black,
+borderRadius: BorderRadius.only(
+bottomLeft: Radius.circular(80),
+bottomRight: Radius.circular(80),
+),
+),
+child: Center(
+child: Image.asset(
+"assets/images/cabecalho.png",
+width: MediaQuery.of(context).size.width * 0.70,
+),
+),
+),
+Padding(
+padding: const EdgeInsets.symmetric(horizontal: 40),
+child: Column(
+children: [
+const SizedBox(height: 30),
+              TextField(
+                controller: nomeController,
+                decoration: const InputDecoration(
+                  hintText: "Nome completo",
+                  prefixIcon: Icon(Icons.person_outline),
                 ),
               ),
 
-              child: Center(
-                child: Image.asset(
-                  "assets/images/cabecalho.png",
+              const SizedBox(height: 12),
 
-                  width:
-                      MediaQuery.of(context)
-                              .size
-                              .width *
-                          0.70,
-
-                  fit: BoxFit.contain,
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  hintText: "E-mail",
+                  prefixIcon: Icon(Icons.email_outlined),
                 ),
               ),
-            ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
+              const SizedBox(height: 12),
+
+              TextField(
+                controller: senhaController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  hintText: "Senha (mínimo 8 caracteres)",
+                  prefixIcon: Icon(Icons.lock_outline),
+                ),
               ),
 
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+              const SizedBox(height: 30),
 
-                children: [
-
-                  const SizedBox(height: 30),
-
-                  const Text(
-                    "Cadastro",
-
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+              SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: ElevatedButton(
+                  onPressed: carregando ? null : cadastrar,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.purple,
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // nome
-                  TextField(
-                    controller: nomeController,
-
-                    decoration: const InputDecoration(
-                      hintText:
-                          "Digite seu nome e sobrenome",
-
-                      prefixIcon:
-                          Icon(Icons.person_outline),
-
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // email
-                  TextField(
-                    controller: emailController,
-
-                    decoration: const InputDecoration(
-                      hintText: "Digite o seu email",
-
-                      prefixIcon:
-                          Icon(Icons.email_outlined),
-
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // senha
-                  TextField(
-                    controller: senhaController,
-                    obscureText: true,
-
-                    decoration: const InputDecoration(
-                      hintText: "Digite sua senha",
-
-                      prefixIcon:
-                          Icon(Icons.lock_outline),
-
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // botão cadastro
-                  SizedBox(
-                    width: double.infinity,
-                    height: 44,
-
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: purpleAeon,
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            20,
+                  child: carregando
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                          "Cadastrar",
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
                         ),
-                      ),
-
-                      onPressed: () {
-
-                        if (nomeController.text.isNotEmpty) {
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-
-                            const SnackBar(
-                              content: Text(
-                                "Cadastro realizado com sucesso!",
-                              ),
-                            ),
-                          );
-
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/quiz',
-                          );
-                        }
-                      },
-
-                      child: const Text(
-                        "Cadastrar",
-
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  ),
+);
+}
 }

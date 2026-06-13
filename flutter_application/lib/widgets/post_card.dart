@@ -1,140 +1,165 @@
+
 import 'package:flutter/material.dart';
 
 import '../models/post.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
+
 class PostCard extends StatelessWidget {
 
   final Post post;
+  final VoidCallback onTap;
 
   const PostCard({
     super.key,
     required this.post,
+    required this.onTap,
   });
 
   @override
+  
   Widget build(BuildContext context) {
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
 
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-
-          // topo
-          Row(
-            children: [
-
-              const CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 22,
-              ),
-
-              const SizedBox(width: 12),
-
-              Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
-                children: [
-
-                  Text(
-                    post.nome,
-
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  Text(
-                    post.info,
-
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-
-              const Spacer(),
-
-              const Icon(Icons.more_horiz),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // estrelas
-          Row(
-            children: List.generate(
-              5,
-              (index) => Icon(
-                Icons.star,
-
-                color: index < post.rating
-                    ? Colors.amber
-                    : Colors.grey,
-
-                size: 18,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          // texto
-          Text(post.texto),
-
-          const SizedBox(height: 12),
-
-          // imagem fake
-          Container(
-            width: double.infinity,
-            height: 180,
-
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-
-              borderRadius:
-                  BorderRadius.circular(16),
-            ),
-
-            child: const Center(
-              child: Icon(
-                Icons.image,
-                size: 60,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          // curtidas
-          Row(
-            children: [
-
-              const Icon(
-                Icons.favorite,
-                color: Colors.red,
-                size: 20,
-              ),
-
-              const SizedBox(width: 4),
-
-              Text("${post.likes} curtidas"),
-            ],
+        color: const Color(0xFFF0FFF5),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
+      ),
+
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+
+            Row(
+              children: [
+
+                const CircleAvatar(
+                  radius: 22,
+                  child: Icon(Icons.person),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+
+                      Text(
+                        post.nome,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+
+                      Text(
+                        post.info,
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Icon(Icons.more_horiz),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            Row(
+              children: List.generate(
+                5,
+                (index) => Icon(
+                  Icons.star,
+                  size: 18,
+                  color: index < post.rating
+                      ? Colors.amber
+                      : Colors.grey.shade400,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Text(
+              post.texto,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.4,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            GestureDetector(
+              onTap: onTap,
+
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 220,
+                    viewportFraction: 1,
+                    enableInfiniteScroll: true,
+                  ),
+
+                  items: post.imagens.map((image) {
+                    return Image.asset(
+                      image,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+
+                const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  '${post.likes} Curtidas',
+                ),
+
+                const Spacer(),
+
+                const Icon(
+                  Icons.bookmark_border,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
