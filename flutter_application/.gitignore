@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+echo "lib/firebase_options.dart" >> .gitignore
 
 # IntelliJ related
 *.iml
