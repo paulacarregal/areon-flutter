@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:provider/provider.dart';
 import '../models/place.dart';
 import '../repositories/place_repository.dart';
 
@@ -9,36 +9,29 @@ import '../repositories/place_repository.dart';
 import '../models/weather.dart';
 import '../services/weather_service.dart';
 
-//import '../models/alert.dart';
-//import '../services/alert_service.dart';
-
-import 'package:provider/provider.dart';
 import '../providers/alert_provider.dart';
 
+import '../services/notification_service.dart';
 
-class MapsScreen extends StatefulWidget  {
+class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
 
   @override
   State<MapsScreen> createState() => _MapsScreenState();
-  }
+}
 
 class _MapsScreenState extends State<MapsScreen> {
 
-
   final MapController mapController = MapController();
-
-  final TextEditingController searchController =
-      TextEditingController();
-
+  final TextEditingController searchController = TextEditingController();
   List<Place> filteredPlaces = [];
 
   @override
   void initState() {
+
     super.initState();
 
     filteredPlaces = getAllPlaces();
-
 
   }
 
@@ -46,9 +39,7 @@ class _MapsScreenState extends State<MapsScreen> {
     final places = getAllPlaces();
 
     final results = places.where((place) {
-      return place.name
-          .toLowerCase()
-          .contains(query.toLowerCase());
+      return place.name.toLowerCase().contains(query.toLowerCase());
     }).toList();
 
     setState(() {
@@ -69,18 +60,19 @@ class _MapsScreenState extends State<MapsScreen> {
   @override
 
   Widget build(BuildContext context) {
+
     final places = filteredPlaces;
-
-    final alertProvider =
-    Provider.of<AlertProvider>(context);
-
-final alerts = alertProvider.alerts;
+    
+    // Escutando o AlertProvider reativo conectado ao Firestore
+    final alertProvider = Provider.of<AlertProvider>(context);
+    final alerts = alertProvider.alerts;
 
     return Scaffold(
+
       body: Stack(
-        
+
         children: [
-          // 1. MAPA 
+          // 1. MAPA (Utilizando flutter_map com os marcadores integrados)
           FlutterMap(
             mapController: mapController,
             options: const MapOptions(
@@ -92,6 +84,8 @@ final alerts = alertProvider.alerts;
                 urlTemplate: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
                 subdomains: const ['a', 'b', 'c', 'd'],
               ),
+              
+              // Camada dos Locais estáticos/filtros
               MarkerLayer(
                 markers: places.map((place) {
 
@@ -108,7 +102,8 @@ final alerts = alertProvider.alerts;
                 }).toList(),
               ),
 
-               MarkerLayer(
+              // Camada reativa dos Alertas vindos em tempo real do Firestore
+              MarkerLayer(
                 markers: alerts.map((alert) {
                   Color color = Colors.green;
 
@@ -123,10 +118,16 @@ final alerts = alertProvider.alerts;
                       alert.latitude,
                       alert.longitude,
                     ),
-                    width: 20,
-                    height: 20,
+                    width: 40, // Aumentado ligeiramente para evitar cortes no ícone
+                    height: 40,
                     child: GestureDetector(
                       onTap: () {
+
+                        NotificationService.showLocalAlert(
+                          title: '⚠️ Alerta AEON',
+                          body: 'Possível risco de alagamento detectado nesta região.',
+                        );
+
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -147,9 +148,7 @@ final alerts = alertProvider.alerts;
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () => Navigator.pop(context),
                                 child: const Text("Fechar"),
                               ),
                             ],
@@ -170,6 +169,7 @@ final alerts = alertProvider.alerts;
 
 
           ),
+
 
           // 2. BARRA DE PESQUISA (Topo)
           Positioned(
@@ -201,36 +201,38 @@ final alerts = alertProvider.alerts;
 
           // 3. PAINEL INFERIOR (Draggable/Arrastável)
           DraggableScrollableSheet(
-            initialChildSize: 0.25, // Altura inicial (mostra só o cabeçalho)
-            minChildSize: 0.20,     // Altura mínima
-            maxChildSize: 0.85,     // Altura máxima quando expandido
+            initialChildSize: 0.25,
+            minChildSize: 0.20,
+            maxChildSize: 0.85,
             builder: (context, scrollController) {
               return Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 225, 223, 223), //
+                  color: const Color.fromARGB(255, 225, 223, 223),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(32),
                     topRight: Radius.circular(32),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color.fromARGB(255, 93, 90, 90), // alterar para um tom mais claro
+                      color: const Color.fromARGB(255, 93, 90, 90),
                       blurRadius: 10,
                       offset: const Offset(0, -2),
                     )
                   ],
                 ),
-                // O ListView
+
                 child: ListView(
+
                   controller: scrollController,
                   padding: EdgeInsets.zero,
                   children: [
                     const SizedBox(height: 12),
-                    // Indicador visual superior 
+
                     Center(
+
                       child: Container(
                         width: 40,
-                        height: 4,
+                        height: 40 == 4 ? 4 : 4, // Simplificado visualmente mantendo a altura antiga
                         decoration: BoxDecoration(
                           color: Colors.grey[400],
                           borderRadius: BorderRadius.circular(2),
@@ -239,13 +241,11 @@ final alerts = alertProvider.alerts;
                     ),
                     const SizedBox(height: 16),
 
-                    // Cabeçalho da Região
+                    // Cabeçalho com dados da API OpenWeather
                     FutureBuilder<Weather>(
                       future: WeatherService().getWeather(),
                       builder: (context, snapshot) {
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Padding(
                             padding: EdgeInsets.all(24),
                             child: Center(
@@ -261,17 +261,13 @@ final alerts = alertProvider.alerts;
                         final weather = snapshot.data!;
 
                         return Column(
+
                           children: [
 
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                              ),
-
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
 
                                   const Text(
@@ -284,6 +280,7 @@ final alerts = alertProvider.alerts;
                                   ),
 
                                   Row(
+
                                     children: [
 
                                       Icon(
@@ -311,34 +308,24 @@ final alerts = alertProvider.alerts;
                             const SizedBox(height: 16),
 
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                              ),
-
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
                               padding: const EdgeInsets.all(16),
 
                               decoration: BoxDecoration(
+
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(20),
                               ),
 
                               child: Column(
+
                                 children: [
 
                                   Row(
                                     children: [
-
-                                      const Icon(
-                                        Icons.water_drop,
-                                        color: Colors.blue,
-                                      ),
-
+                                      const Icon(Icons.water_drop, color: Colors.blue),
                                       const SizedBox(width: 8),
-
-                                      Text(
-                                        "Umidade: ${weather.humidity}%",
-                                      ),
+                                      Text("Umidade: ${weather.humidity}%"),
                                     ],
                                   ),
 
@@ -346,17 +333,9 @@ final alerts = alertProvider.alerts;
 
                                   Row(
                                     children: [
-
-                                      const Icon(
-                                        Icons.air,
-                                        color: Colors.teal,
-                                      ),
-
+                                      const Icon(Icons.air, color: Colors.teal),
                                       const SizedBox(width: 8),
-
-                                      Text(
-                                        "Vento: ${weather.windSpeed} m/s",
-                                      ),
+                                      Text("Vento: ${weather.windSpeed} m/s"),
                                     ],
                                   ),
 
@@ -364,18 +343,11 @@ final alerts = alertProvider.alerts;
 
                                   Row(
                                     children: [
-
-                                      const Icon(
-                                        Icons.cloud,
-                                        color: Colors.grey,
-                                      ),
-
+                                      const Icon(Icons.cloud, color: Colors.grey),
                                       const SizedBox(width: 8),
 
                                       Expanded(
-                                        child: Text(
-                                          weather.description,
-                                        ),
+                                        child: Text(weather.description),
                                       ),
                                     ],
                                   ),
@@ -384,6 +356,7 @@ final alerts = alertProvider.alerts;
                             ),
 
                             const SizedBox(height: 24),
+
                           ],
                         );
                       },
@@ -401,20 +374,23 @@ final alerts = alertProvider.alerts;
                             ),
                           ),
                         ),
-                     ),
+                      ),
 
-                    // Seções com as listas horizontais 
+
                     buildSection(context, "Hora do Almoço", places),
+
                     const SizedBox(height: 24),
+
                     buildSection(context, "Para Explorar", places),
-                    const SizedBox(height: 40), 
+
+                    const SizedBox(height: 40),
                   ],
                 ),
               );
             },
           ),
         ],
-        
+
       ),
     );
   }
@@ -456,7 +432,7 @@ final alerts = alertProvider.alerts;
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    
+
                       Container(
                         height: 140,
                         width: double.infinity,
@@ -473,16 +449,15 @@ final alerts = alertProvider.alerts;
                             topRight: Radius.circular(24),
                           ),
                           child: place.image.isNotEmpty
-                              ? Image.asset(
-                                place.image, 
-                              fit: BoxFit.cover)
+                              ? Image.asset(place.image, fit: BoxFit.cover)
                               : const Center(
                                   child: Icon(Icons.image_outlined, size: 48, color: Colors.black54),
                                 ),
                         ),
                       ),
-                      // Dados textuais
+
                       Padding(
+
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

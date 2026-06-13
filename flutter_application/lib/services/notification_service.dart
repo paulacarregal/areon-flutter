@@ -2,6 +2,28 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
+  
+
+  static Future<void> showLocalAlert({
+      required String title,
+      required String body,
+    }) async {
+      await notifications.show(
+        1,
+        title,
+        body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'alert_channel',
+            'Alertas',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+        ),
+      );
+    }
+
+
   static final FlutterLocalNotificationsPlugin
       notifications =
       FlutterLocalNotificationsPlugin();

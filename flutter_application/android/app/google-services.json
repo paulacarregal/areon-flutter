@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "15496712239",
+    "firebase_url": "https://aeon-1bdd5-default-rtdb.firebaseio.com",
     "project_id": "aeon-1bdd5",
     "storage_bucket": "aeon-1bdd5.firebasestorage.app"
   },

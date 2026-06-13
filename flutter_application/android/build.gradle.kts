@@ -1,3 +1,8 @@
+plugins {
+    // Adicionamos o plugin do Kotlin com uma versão estável e compatível com o NDK 28
+    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+}
+
 allprojects {
     repositories {
         google()
