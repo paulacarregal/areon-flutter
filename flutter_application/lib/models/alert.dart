@@ -1,4 +1,5 @@
 class Alert {
+  final String id;
   final String titulo;
   final String descricao;
   final String nivel;
@@ -7,6 +8,7 @@ class Alert {
   final bool ativo;
 
   Alert({
+    this.id = '',
     required this.titulo,
     required this.descricao,
     required this.nivel,
@@ -15,14 +17,26 @@ class Alert {
     required this.ativo,
   });
 
-  factory Alert.fromMap(Map<String, dynamic> map) {
+  factory Alert.fromMap(String id, Map<String, dynamic> map) {
     return Alert(
-      titulo: map['titulo'] ?? '',
-      descricao: map['descricao'] ?? '',
-      nivel: map['nivel'] ?? '',
-      latitude: (map['latitude'] as num).toDouble(),
-      longitude: (map['longitude'] as num).toDouble(),
-      ativo: map['ativo'] ?? false,
+      id: id,
+      titulo: map['titulo'] as String? ?? '',
+      descricao: map['descricao'] as String? ?? '',
+      nivel: map['nivel'] as String? ?? 'baixo',
+      latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
+      ativo: map['ativo'] as bool? ?? false,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'titulo': titulo,
+      'descricao': descricao,
+      'nivel': nivel,
+      'latitude': latitude,
+      'longitude': longitude,
+      'ativo': ativo,
+    };
   }
 }
