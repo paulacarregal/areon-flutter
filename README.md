@@ -1,100 +1,123 @@
-# Conhecendo o AEON
+<h1 align="center">
+  ÆON ✨
+</h1>
 
-AEON é uma plataforma inteligente de monitoramento urbano desenvolvida para auxiliar usuários na identificação de riscos ambientais, condições climáticas e informações contextuais em tempo real. O projeto combina geolocalização, integração com serviços em nuvem, notificações inteligentes e análise de dados ambientais para fornecer suporte à tomada de decisão em ambientes urbanos.
+<h4 align="center">
+  O seu Motor Inteligente de Experiências Urbanas.
+</h4>
+
+<p align="center">
+  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white">
+  <img alt="Jetpack Compose" src="https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=for-the-badge&logo=android&logoColor=white">
+</p>
+
+<p align="center">
+  <a href="#-aeon">Sobre</a> •
+  <a href="#-objetivo">Objetivo</a> •
+  <a href="#-funcionalidaddes">Funcionalidades</a> •
+  <a href="#-tecnologias-adotadas">Tecnologias</a> •
+  <a href="#-documentacao">Como Executar</a> •
+  
+</p>
+
+---
+
+# AEON
+
+AEON é um aplicativo Flutter de recomendação urbana inteligente. A proposta é ajudar o usuário a descobrir lugares, experiências e rotas em São Paulo a partir de um perfil inicial criado por quiz, do contexto atual do aparelho e de sinais como localização, clima, distância e preferências de deslocamento.
+
+O projeto foi desenvolvido como MVP acadêmico, com foco em experiência mobile, integração com Firebase, mapa interativo, reviews, favoritos e recomendações apoiadas por IA.
 
 ## Objetivo
 
-O objetivo do AEON é utilizar tecnologias modernas de desenvolvimento mobile, computação em nuvem e inteligência artificial e o  monitoramento de  eventos ambientais e disponibilizar informações relevantes aos usuários por meio de mapas interativos, alertas em tempo real e dados climáticos atualizados, e assim, complementar a curadoria urbana de modo que as indicações sejam assertivas e levando em consideração o tempo da cidade.
+Criar uma experiência de exploração urbana mais personalizada do que uma lista genérica de lugares. O app combina:
 
-## Principais Funcionalidades
+- perfil de interesse criado no onboarding;
+- localização atual do usuário;
+- clima e contexto do momento;
+- IA para gerar recomendações em linguagem natural.
 
-* Autenticação de usuários com Firebase Authentication
-* Monitoramento de alertas ambientais em tempo real
-* Integração com mapas interativos
-* Exibição de dados climáticos através da OpenWeather API
-* Notificações push utilizando Firebase Cloud Messaging (FCM)
-* Feed social para compartilhamento de informações
-* Sistema de favoritos
-* Perfil do usuário
-* Navegação otimizada entre telas
-* Persistência local de dados
+A recomendação aparece no mapa como um card contextual. Ao selecionar a sugestão, o usuário visualiza opções de rota por carro, transporte público, caminhada e carro por aplicativo.
 
-## Tecnologias Utilizadas
+## Funcionalidades
 
-### Mobile
+- Cadastro, login e logout com Firebase Authentication.
+- Quiz inicial para mapear o perfil do usuário.
+- Perfil com nome, foto simbólica, reviews publicadas e configurações.
+- Edição do radar de preferências com pesos de recomendação.
+- Feed de reviews com curtidas, favoritos e publicações salvas.
+- Tela de contribuição com locais visitados recentemente.
+- Criação de review com nota, texto, tags e faixa média de gasto.
+- Persistência de usuários e reviews no Cloud Firestore.
+- Mapa com OpenStreetMap via `flutter_map`.
+- Captura de localização do aparelho quando permitida.
+- Consulta de clima com fallback local ou backend opcional.
+- Recomendação com Firebase AI Logic/Gemini e fallback local.
+- Simulação de rota e estimativas por modal de transporte.
+- Backend opcional em FastAPI para concentrar regras e proteger chaves externas.
 
-* Flutter
-* Dart
-* Provider
+## Tecnologias Adotadas
 
-### Backend e Serviços
+O projeto utiliza tecnologias voltadas ao desenvolvimento mobile multiplataforma, integração em nuvem, geolocalização e inteligência artificial.
 
-* Firebase Authentication
-* Firebase Firestore
-* Firebase Cloud Messaging (FCM)
+| Categoria | Tecnologias |
+| --- | --- |
+| Linguagem principal | Dart |
+| Framework mobile | Flutter |
+| Gerenciamento de estado | Provider |
+| Backend opcional | Python e FastAPI |
+| Banco de dados | Cloud Firestore |
+| Autenticação | Firebase Authentication |
+| Segurança e validação de origem | Firebase App Check |
+| Inteligência artificial | Firebase AI Logic com Gemini |
+| Mapas | Flutter Map e OpenStreetMap |
+| Localização | Geolocator |
+| Chamadas HTTP | Pacotes HTTP/Dio usados na comunicação com serviços externos e backend |
+| Persistência e dados em nuvem | Firebase Core, Cloud Firestore e estrutura de services/repositories |
+| Ferramentas de desenvolvimento | Android Studio, VS Code, Flutter CLI, Git e Firebase Console |
+| Integrações externas | Firebase, OpenStreetMap, OpenWeather via backend/fallback e links externos para Uber/99 |
 
-### APIs Externas
-
-* OpenWeather API
-* Serviços de Geolocalização
-* Flutter Map
-
-## Estrutura do Projeto
+## Estrutura
 
 ```text
-lib/
-├── models/
-├── providers/
-├── repositories/
-├── routes/
-├── screens/
-├── services/
-├── widgets/
-└── main.dart
+flutter_application/
+  lib/
+    core/
+    features/
+    models/
+    providers/
+    repositories/
+    routes/
+    screens/
+    services/
+    widgets/
+    main.dart
+  backend/
+    main.py
+    requirements.txt
+    data/
+  EXECUTE.md
+  BACKEND.md
 ```
 
-## Arquitetura
+## Documentação
 
-O projeto utiliza uma arquitetura baseada em separação de responsabilidades, dividindo a aplicação em camadas:
-
-* Models: representação dos dados
-* Services: comunicação com APIs e Firebase
-* Repositories: acesso aos dados
-* Providers: gerenciamento de estado global
-* Screens: telas da aplicação
-* Widgets: componentes reutilizáveis
-
-## Funcionalidades de Rede
-
-O sistema utiliza:
-
-* HTTPS para comunicação com APIs externas
-* gRPC através do Firebase Firestore
-* Firebase Cloud Messaging para notificações push
-* Cloud Firestore para sincronização de dados em tempo real
-
-## Segurança
-
-* Comunicação criptografada via HTTPS/TLS
-* Autenticação gerenciada pelo Firebase
-* Estrutura preparada para adequação à LGPD
-* Persistência segura de dados do usuário
+- Como executar o app: `flutter_application/EXECUTE.md`
+- Backend FastAPI: `flutter_application/BACKEND.md`
 
 ## Desenvolvedores
 
-* Manoela Oliveira
-* Paula Carregal
-* Pedro Santiago
-* Vanessa Fittipaldi 
+- Manoela Oliveira - [GitHub](https://github.com/Manu11000)
+- Paula Carregal - [GitHub](https://github.com/paulacarregal)
+- Pedro Santiago - [GitHub](https://github.com/pedrosantiago1)
+- Vanessa Fittipaldi - [GitHub](https://github.com/vxnesv)
 
-## Como Executar
+<p align="center">
+  <br>
+  Desenvolvido com 💜 focado em inovar a exploração urbana.
+</p>
+<p align="center">
+  <br>
+  © 2026 AEON Project.
+</p>
 
-As instruções completas de instalação e execução estão disponíveis em:
-
-```text
-flutter_application/EXECUTE.md
-```
-
-## Repositório
-
-Projeto desenvolvido para fins acadêmicos no contexto das atividades da FIAP, envolvendo desenvolvimento mobile, integração com serviços em nuvem, monitoramento de sistemas e aplicações inteligentes voltadas ao ambiente urbano.

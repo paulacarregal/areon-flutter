@@ -1,149 +1,109 @@
-🚀 COMO RODAR O AEON
+# Como executar o AEON
 
-Este documento explica passo a passo como configurar e executar o projeto.
+Este documento apresenta o caminho recomendado para executar o MVP do AEON em ambiente local.
 
-📌 1. Pré-requisitos
+## 1. Pré-requisitos
 
-Antes de começar, instale:
+- Flutter SDK instalado e configurado no PATH.
+- Android Studio ou VS Code.
+- Git.
+- Para Android: emulador ou celular com modo desenvolvedor ativado.
+- Para Web: Edge ou Chrome.
 
-🔧 Ferramentas obrigatórias
+Verifique o ambiente com:
 
-Flutter SDK (versão estável)
-https://flutter.dev/docs/get-started/install
-Dart SDK (já incluso no Flutter)
-Android Studio ou VS Code
-Git
-https://git-scm.com/
+```bash
+flutter doctor
+```
 
-📱 Emulador ou dispositivo físico
+## 2. Instalar dependências
 
-Android Emulator (recomendado)
-ou
-Celular Android com modo desenvolvedor ativado
+Na raiz do repositório, entre na pasta do app:
 
-📦 2. Clonar o projeto
-
-No terminal:
-
-git clone [https://github.com/paulacarregal/areon-flutter]
-
-Depois entre na pasta:
-
-cd areon-flutter
-
-📥 3. Instalar dependências Flutter
-
-Execute:
-
+```bash
+cd flutter_application
 flutter pub get
+```
 
-🔥 4. Configuração do Firebase
+## 3. Ambiente Firebase da entrega
 
-O projeto utiliza Firebase para autenticação e banco de dados.
+O avaliador não precisa criar um novo projeto Firebase. Esta entrega deve ser executada usando o projeto Firebase já configurado pela equipe.
 
-4.1 Verificar arquivos necessários
+Por isso, estes arquivos fazem parte do ambiente do MVP e devem estar presentes no repositório ou no pacote entregue:
 
-Certifique-se de que estes arquivos existem:
 
+```text
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
+```
 
-4.2 Inicializar Firebase no app
+Eles apontam para o Firebase usado no desenvolvimento do AEON, incluindo Authentication, Firestore, App Check e Firebase AI Logic.
 
-O Firebase já está configurado no projeto via FlutterFire CLI.
+No MVP, o projeto foi validado em Web/Edge e preparado para Android e iOS. A execução em iPhone ainda exige validação em ambiente Apple com Xcode e CocoaPods.
 
-No main.dart, deve existir algo como:
+## 4. Executar no navegador
 
-await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+```bash
+flutter run -d edge
+```
 
-4.3 Problemas comuns
+Caso o App Check Web esteja com reCAPTCHA configurado, informe a chave pública:
 
-Se ocorrer erro:
+```bash
+flutter run -d edge --dart-define=RECAPTCHA_V3_SITE_KEY=SUA_CHAVE_PUBLICA
+```
 
-Firebase not initialized
+## 5. Executar no Android
 
-execute:
+Liste os dispositivos disponíveis:
 
-flutter clean
-flutter pub get
+```bash
+flutter devices
+```
 
-🌦️ 5. Configuração de APIs externas
+Depois execute:
 
-O projeto utiliza API da OpenWeather.
+```bash
+flutter run -d ID_DO_DEVICE
+```
 
-5.2 Importante
+Se aparecer erro de Java/Gradle, verifique se o Android Studio está usando JDK 17 e se o caminho em `android/gradle.properties` aponta para uma instalação válida.
 
-NÃO versionar o .env
-Ele já está no .gitignore
+## 6. Backend opcional
 
-📦 6. Dependências importantes
+O app funciona sem backend usando fallbacks locais. Para testar o FastAPI, rode primeiro:
 
-O projeto usa:
+```bash
+cd backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
 
-Firebase Core
-Firebase Auth
-Cloud Firestore
-Firebase Messaging
-HTTP
-Provider
-Flutter DotEnv
+Em outro terminal, execute o Flutter apontando para o backend:
 
-▶️ 7. Rodando o projeto
+```bash
+flutter run -d edge --dart-define=BACKEND_URL=http://127.0.0.1:8000
+```
 
-Execute:
+Para Android Emulator:
 
-flutter run
+```bash
+flutter run -d ID_DO_DEVICE --dart-define=BACKEND_URL=http://10.0.2.2:8000
+```
 
-ou selecione o device no VS Code e clique em Run
+Para celular físico, use o IP local do computador na mesma rede:
 
-📲 8. Notificações (Firebase Cloud Messaging)
+```bash
+flutter run -d ID_DO_DEVICE --dart-define=BACKEND_URL=http://SEU_IP_LOCAL:8000
+```
 
-Para testar notificações push:
+## 7. Observações
 
-Android:
-Aceitar permissões no app
-
-Garantir internet ativa
-
-Usar Firebase Console:
-
-Cloud Messaging → Send Test Message
-
-⚠️ 9. Problemas comuns
-❌ Flutter não reconhece comando
-flutter doctor
-
-Corrigir dependências faltantes.
-
-❌ Erro no Firebase
-
-Rodar:
-
-flutter clean
-flutter pub get
-
-❌ Erro de API Key
-
-Verificar se .env existe e está correto.
-
-🧠 10. Estrutura do projeto
-
-O projeto segue organização por camadas:
-
-lib/
- ├── models/
- ├── screens/
- ├── services/
- ├── repositories/
- ├── widgets/
- ├── theme/
- └── main.dart
-🚀 11. Observações finais
-
-O projeto depende de Firebase ativo
-API keys devem ser configuradas localmente
-O app pode ser executado em Android e Web
-Recomenda-se usar Android Studio para emulador
+- A entrega foi pensada para rodar no mesmo Firebase usado pela equipe, sem recriação de projeto pelo avaliador.
+- As chaves presentes em `firebase_options.dart`, `google-services.json` e `GoogleService-Info.plist` identificam o projeto Firebase, mas não substituem regras de segurança.
+- Chaves sensíveis de APIs externas devem ficar em variáveis de ambiente ou no backend.
+- As rotas do MVP usam estimativas e linha direta no mapa, não uma API paga de roteamento.
+- O mapa usa OpenStreetMap, evitando custo de Google Maps no protótipo.
