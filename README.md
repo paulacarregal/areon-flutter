@@ -6,19 +6,6 @@
   O seu Motor Inteligente de Experiências Urbanas.
 </h4>
 
-<p align="center">
-  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white">
-  <img alt="Jetpack Compose" src="https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=for-the-badge&logo=android&logoColor=white">
-</p>
-
-<p align="center">
-  <a href="#-aeon">Sobre</a> •
-  <a href="#-objetivo">Objetivo</a> •
-  <a href="#-funcionalidaddes">Funcionalidades</a> •
-  <a href="#-tecnologias-adotadas">Tecnologias</a> •
-  <a href="#-documentacao">Como Executar</a> •
-  
-</p>
 
 ---
 
@@ -43,13 +30,11 @@ A recomendação aparece no mapa como um card contextual. Ao selecionar a sugest
 
 - Cadastro, login e logout com Firebase Authentication.
 - Quiz inicial para mapear o perfil do usuário.
-- Perfil com nome, foto simbólica, reviews publicadas e configurações.
-- Edição do radar de preferências com pesos de recomendação.
 - Feed de reviews com curtidas, favoritos e publicações salvas.
 - Tela de contribuição com locais visitados recentemente.
 - Criação de review com nota, texto, tags e faixa média de gasto.
 - Persistência de usuários e reviews no Cloud Firestore.
-- Mapa com OpenStreetMap via `flutter_map`.
+- Integração com mapas interativos.
 - Captura de localização do aparelho quando permitida.
 - Consulta de clima com fallback local ou backend opcional.
 - Recomendação com Firebase AI Logic/Gemini e fallback local.
