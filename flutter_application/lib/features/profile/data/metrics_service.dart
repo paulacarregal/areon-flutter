@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../core/app_config.dart';
-import '../core/zabbix/zabbix_sender.dart';
+import 'package:flutter_application/core/app_config.dart';
+import 'package:flutter_application/core/zabbix/zabbix_sender.dart';
 
 /// Singleton that collects app metrics and ships them to Zabbix in batches.
 ///

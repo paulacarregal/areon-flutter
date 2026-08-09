@@ -63,6 +63,9 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _error = _mapAuthError(e.code);
       return false;
+    } catch (_) {
+      _error = 'Cadastro criado, mas nao foi possivel sincronizar o perfil.';
+      return isAuthenticated || FirebaseAuth.instance.currentUser != null;
     } finally {
       _loading = false;
       notifyListeners();

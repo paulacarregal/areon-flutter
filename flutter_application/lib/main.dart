@@ -1,21 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD
-import 'core/navigation_observer.dart';
-import 'firebase_options.dart';
-import 'routes/app_routes.dart';
-import 'routes/route_names.dart';
-import 'services/logging_service.dart';
-import 'services/metrics_service.dart';
-import 'services/notification_service.dart';
-import 'providers/alert_provider.dart';
-import 'providers/auth_provider.dart' as app;
-import 'providers/weather_provider.dart';
-=======
+
 import 'app.dart';
 import 'firebase_options.dart';
 import 'core/observability/logging_service.dart';
@@ -26,17 +16,14 @@ import 'features/feed/presentation/post_provider.dart';
 import 'features/map/presentation/place_provider.dart';
 import 'features/notifications/notification_service.dart';
 import 'features/profile/presentation/quiz_provider.dart';
+import 'features/recommendations/presentation/ai_recommendation_provider.dart';
 import 'features/weather/presentation/weather_provider.dart';
->>>>>>> a7177f5 (refactor: ajeitando as pastas)
+
 
 void main() async {
   final appStarted = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
 
-<<<<<<< HEAD
-  // Bootstrap observability before anything else
-=======
->>>>>>> a7177f5 (refactor: ajeitando as pastas)
   metrics.init();
   log.info('App', 'starting');
 
@@ -45,17 +32,11 @@ void main() async {
   );
   log.info('App', 'Firebase initialized');
 
-<<<<<<< HEAD
-  // FCM and local notifications are only supported on mobile/web.
-  final bool supportsPush = !kIsWeb
-      ? defaultTargetPlatform == TargetPlatform.android ||
-          defaultTargetPlatform == TargetPlatform.iOS
-      : true;
-=======
+  await _activateAppCheck();
+
   final bool supportsPush = !kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
->>>>>>> a7177f5 (refactor: ajeitando as pastas)
 
   if (supportsPush) {
     await NotificationService.initialize();
@@ -73,48 +54,55 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-<<<<<<< HEAD
-        ChangeNotifierProvider(
-          create: (_) => app.AuthProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final provider = AlertProvider();
-            provider.startListening();
-            return provider;
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (_) => WeatherProvider()..fetch(),
-        ),
-=======
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => AlertProvider()),
-        ChangeNotifierProvider(create: (_) => WeatherProvider()..fetch()),
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
         ChangeNotifierProvider(create: (_) => PostProvider()),
         ChangeNotifierProvider(create: (_) => PlaceProvider()),
         ChangeNotifierProvider(create: (_) => QuizProvider()),
->>>>>>> a7177f5 (refactor: ajeitando as pastas)
+        ChangeNotifierProvider(create: (_) => AiRecommendationProvider()),
       ],
       child: const AeonApp(),
     ),
   );
 }
-<<<<<<< HEAD
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> _activateAppCheck() async {
+  const recaptchaSiteKey =
+      String.fromEnvironment('RECAPTCHA_V3_SITE_KEY', defaultValue: '');
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'AEON',
-      initialRoute: RouteNames.login,
-      routes: AppRoutes.routes,
-      navigatorObservers: [MetricsNavigationObserver()],
+  try {
+    if (kIsWeb) {
+      if (recaptchaSiteKey.isEmpty) {
+        log.warn('AppCheck', 'RECAPTCHA_V3_SITE_KEY not configured for web');
+        return;
+      }
+
+      await FirebaseAppCheck.instance.activate(
+        webProvider: ReCaptchaV3Provider(recaptchaSiteKey),
+      );
+      log.info('AppCheck', 'activated for web');
+      return;
+    }
+
+    final supportsAppCheck = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS;
+
+    if (!supportsAppCheck) {
+      log.warn('AppCheck', 'platform not supported for App Check activation');
+      return;
+    }
+
+    await FirebaseAppCheck.instance.activate(
+      androidProvider:
+          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      appleProvider: kDebugMode
+          ? AppleProvider.debug
+          : AppleProvider.appAttestWithDeviceCheckFallback,
     );
+    log.info('AppCheck', 'activated');
+  } catch (e, st) {
+    log.error('AppCheck', 'activation failed', error: e, stack: st);
   }
 }
-=======
->>>>>>> a7177f5 (refactor: ajeitando as pastas)

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import './auth_service.dart';
@@ -27,8 +28,15 @@ class AuthRepository {
     required String nome,
   }) async {
     final credential = await _authService.signUpWithEmail(email, password);
-    final uid = credential.user!.uid;
-    await _userService.createUser(uid: uid, nome: nome, email: email);
+    final user = credential.user!;
+    await user.updateDisplayName(nome);
+    final uid = user.uid;
+    try {
+      await _userService.createUser(uid: uid, nome: nome, email: email);
+    } on FirebaseException {
+      // The Auth account already exists; do not block the onboarding quiz if
+      // Firestore rules/network fail during the optional profile document write.
+    }
   }
 
   Future<void> logout() => _authService.signOut();

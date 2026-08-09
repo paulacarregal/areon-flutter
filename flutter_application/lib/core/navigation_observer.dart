@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-<<<<<<< HEAD
-import '../services/logging_service.dart';
-import '../services/metrics_service.dart';
-=======
 import 'observability/logging_service.dart';
 import 'observability/metrics_service.dart';
->>>>>>> a7177f5 (refactor: ajeitando as pastas)
+
 
 /// Records a metric and log entry every time the user navigates to a new screen.
 class MetricsNavigationObserver extends NavigatorObserver {
