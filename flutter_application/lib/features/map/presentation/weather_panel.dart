@@ -3,8 +3,25 @@ import 'package:provider/provider.dart';
 
 import '../../weather/presentation/weather_provider.dart';
 
-class WeatherPanel extends StatelessWidget {
+class WeatherPanel extends StatefulWidget {
   const WeatherPanel({super.key});
+
+  @override
+  State<WeatherPanel> createState() => _WeatherPanelState();
+}
+
+class _WeatherPanelState extends State<WeatherPanel> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final provider = context.read<WeatherProvider>();
+      if (provider.status == WeatherStatus.initial) {
+        provider.fetch();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

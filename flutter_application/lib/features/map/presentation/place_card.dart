@@ -14,71 +14,101 @@ class PlaceCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteNames.postDetail),
       child: Container(
-        width: 170,
-        margin: const EdgeInsets.only(right: 16),
+        width: 246,
+        margin: const EdgeInsets.only(right: 36),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 140,
+              height: 158,
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.placeCardBg,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
-                ),
-              ),
-              child: ClipRRect(
+              decoration: BoxDecoration(
+                color: place.image.isEmpty ? AppColors.placeCardBg : Colors.black12,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                child: place.image.isNotEmpty
-                    ? Image.asset(place.image, fit: BoxFit.cover)
-                    : const Center(
-                        child: Icon(Icons.image_outlined,
-                            size: 48, color: Colors.black54),
-                      ),
+                image: place.image.isNotEmpty
+                    ? DecorationImage(
+                        image: AssetImage(place.image),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
               ),
+              child: place.image.isEmpty
+                  ? Center(
+                      child: Icon(
+                        Icons.image_outlined,
+                        size: 90,
+                        color: Colors.black.withValues(alpha: 0.92),
+                      ),
+                    )
+                  : null,
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    place.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text('${place.rating}',
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      place.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                        height: 1,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text(
+                          place.rating.toStringAsFixed(1),
                           style: const TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.w600)),
-                      const Icon(Icons.star, color: Colors.amber, size: 12),
-                      const SizedBox(width: 4),
-                      Text('• ${place.priceRange}',
-                          style: TextStyle(
-                              fontSize: 11, color: Colors.grey[600])),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Abre às ${place.horario}   •   ${place.distancia}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[500]),
-                  ),
-                ],
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Icon(Icons.star, color: Colors.amber, size: 14),
+                        Expanded(
+                          child: Text(
+                            ' (150+)  ${place.priceRange}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF777777),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Abre as ${place.horario}      ${place.distancia}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF777777),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
