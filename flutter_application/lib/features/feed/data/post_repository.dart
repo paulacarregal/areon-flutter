@@ -3,23 +3,11 @@ import '../domain/post.dart';
 List<Post> getAllPosts() {
   return [
     Post(
-      nome: 'Blair Willows',
-      info: '12 Avaliações . 30 Fotos',
-      texto:
-          'Descobri um restaurante incrível hoje, perfeito para trabalhar e relaxar ☕.📍 Terraço Jardins',
-      rating: 5,
-      likes: 32,
-      imagens: [
-        'assets/images/places/bar_tan_tan_1.jpg',
-        'assets/images/places/bar_tan_tan_2.jpg',
-        'assets/images/places/bar_tan_tan_3.jpg',
-      ],
-    ),
-    Post(
+      id: 'draculaura-catedral-se',
       nome: 'Draculaura',
-      info: '6 Avaliações . 13 Fotos',
+      info: '6 Avaliacoes . 13 Fotos',
       texto:
-          'Hoje fui conhecer um dos marcos históricos de São Paulo, uma experiência cultural incrível.📍 Catedral da Sé',
+          'Hoje fui conhecer um dos marcos historicos de Sao Paulo, uma experiencia cultural incrivel.\nLocal: Catedral da Se',
       rating: 4,
       likes: 45,
       imagens: [
@@ -29,10 +17,11 @@ List<Post> getAllPosts() {
       ],
     ),
     Post(
+      id: 'ken-vista-rooftop',
       nome: 'Ken Fashionista',
-      info: '8 Avaliações . 15 Fotos',
+      info: '8 Avaliacoes . 15 Fotos',
       texto:
-          'Esse rooftop é simplesmente incrível, com uma vista absurda da cidade.📍 Vista Rooftop Bar',
+          'Esse rooftop e simplesmente incrivel, com uma vista absurda da cidade.\nLocal: Vista Rooftop Bar',
       rating: 5,
       likes: 12,
       imagens: [

@@ -8,14 +8,19 @@ import './favoritos_screen.dart';
 import '../../../shared/widgets/bottom_bar.dart';
 
 class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({super.key});
+  final int initialIndex;
+
+  const NavigationScreen({
+    super.key,
+    this.initialIndex = 0,
+  });
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   final _screens = const [
     MenuScreen(),
@@ -24,6 +29,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     FavoritesScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {

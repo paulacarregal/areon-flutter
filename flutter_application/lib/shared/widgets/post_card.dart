@@ -6,11 +6,21 @@ import '../../features/feed/domain/post.dart';
 class PostCard extends StatelessWidget {
   final Post post;
   final VoidCallback onTap;
+  final bool liked;
+  final bool saved;
+  final int displayLikes;
+  final VoidCallback onLike;
+  final VoidCallback onSave;
 
   const PostCard({
     super.key,
     required this.post,
     required this.onTap,
+    required this.liked,
+    required this.saved,
+    required this.displayLikes,
+    required this.onLike,
+    required this.onSave,
   });
 
   @override
@@ -53,7 +63,6 @@ class PostCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.more_horiz),
               ],
             ),
             const SizedBox(height: 10),
@@ -91,11 +100,35 @@ class PostCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Icon(Icons.favorite, color: Colors.red),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 34,
+                    minHeight: 34,
+                  ),
+                  onPressed: onLike,
+                  icon: Icon(
+                    liked ? Icons.favorite : Icons.favorite_border,
+                    color: liked ? Colors.red : Colors.black54,
+                  ),
+                ),
                 const SizedBox(width: 6),
-                Text('${post.likes} Curtidas'),
+                Text('$displayLikes Curtidas'),
                 const Spacer(),
-                const Icon(Icons.bookmark_border),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 34,
+                    minHeight: 34,
+                  ),
+                  onPressed: onSave,
+                  icon: Icon(
+                    saved ? Icons.bookmark : Icons.bookmark_border,
+                    color: saved ? const Color(0xFF7B1FA2) : Colors.black54,
+                  ),
+                ),
               ],
             ),
           ],

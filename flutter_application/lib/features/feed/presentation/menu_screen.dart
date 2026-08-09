@@ -7,23 +7,63 @@ import './post_provider.dart';
 import './post_detail_screen.dart';
 import '../../auth/presentation/auth_provider.dart' as app;
 import '../../../core/constants/firestore_paths.dart';
+import '../../../shared/routes/route_names.dart';
 import '../../../shared/widgets/post_card.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 
+  String _fallbackNomeUsuario() {
+    final user = FirebaseAuth.instance.currentUser;
+    final authName = user?.displayName?.trim();
+    if (authName != null && authName.isNotEmpty) return authName;
+
+    final emailName = user?.email?.split('@').first.trim();
+    if (emailName != null && emailName.isNotEmpty) return emailName;
+
+    return 'Explorador';
+  }
+
   Future<String> _getNomeUsuario() async {
+    const fallbackName = 'Explorador';
+
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return 'Explorador';
+      if (user == null) return fallbackName;
       final doc = await FirebaseFirestore.instance
           .collection(FirestorePaths.users)
           .doc(user.uid)
           .get();
-      return doc.data()?['nome'] ?? 'Explorador';
+
+      final firestoreName = doc.data()?['nome']?.toString().trim();
+      if (firestoreName != null && firestoreName.isNotEmpty) {
+        return firestoreName;
+      }
+
+      final authName = user.displayName?.trim();
+      if (authName != null && authName.isNotEmpty) return authName;
+
+      final emailName = user.email?.split('@').first.trim();
+      if (emailName != null && emailName.isNotEmpty) return emailName;
+
+      return fallbackName;
     } catch (_) {
-      return 'Explorador';
+      final authName = FirebaseAuth.instance.currentUser?.displayName?.trim();
+      return authName != null && authName.isNotEmpty
+          ? authName
+          : fallbackName;
     }
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    await context.read<app.AuthProvider>().logout();
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      RouteNames.login,
+      (_) => false,
+    );
   }
 
   @override
@@ -40,7 +80,7 @@ class MenuScreen extends StatelessWidget {
           future: _getNomeUsuario(),
           builder: (context, snapshot) {
             return Text(
-              'Olá, ${snapshot.data ?? "Explorador"}!',
+              'Olá, ${snapshot.data ?? _fallbackNomeUsuario()}!',
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -51,7 +91,7 @@ class MenuScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white54),
-            onPressed: () => context.read<app.AuthProvider>().logout(),
+            onPressed: () => _logout(context),
           ),
         ],
       ),
@@ -69,6 +109,11 @@ class MenuScreen extends StatelessWidget {
                     final post = postProvider.posts[index];
                     return PostCard(
                       post: post,
+                      liked: postProvider.isLiked(post),
+                      saved: postProvider.isSaved(post),
+                      displayLikes: postProvider.displayLikes(post),
+                      onLike: () => postProvider.toggleLike(post),
+                      onSave: () => postProvider.toggleSaved(post),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
