@@ -9,8 +9,6 @@
 
 ---
 
-# AEON
-
 AEON é um aplicativo Flutter de recomendação urbana inteligente. A proposta é ajudar o usuário a descobrir lugares, experiências e rotas em São Paulo a partir de um perfil inicial criado por quiz, do contexto atual do aparelho e de sinais como localização, clima, distância e preferências de deslocamento.
 
 O projeto foi desenvolvido como MVP acadêmico, com foco em experiência mobile, integração com Firebase, mapa interativo, reviews, favoritos e recomendações apoiadas por IA.
