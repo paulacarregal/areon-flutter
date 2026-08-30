@@ -4,11 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/firestore_paths.dart';
-import '../../../shared/routes/route_names.dart';
+import '../../../routes/route_names.dart';
 import '../../feed/presentation/post_provider.dart';
 import '../data/user_service.dart';
 import '../../reviews/data/review_service.dart';
 import '../../reviews/domain/review.dart';
+
+
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -27,7 +30,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _reloadProfile() {
-    setState(() => _profileFuture = _loadProfile());
+    setState(() {
+      _profileFuture = _loadProfile();
+    });
   }
 
   Future<Map<String, dynamic>> _getUserData() async {
@@ -150,34 +155,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(nome,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        nome,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(email,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        email,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                            color: Colors.grey)),
-                                  ],
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(width: 4),
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
                                       tooltip: 'Preferencias',
-                                      onPressed: () =>
-                                          _openPreferences(userData),
+                                      onPressed: () => _openPreferences(userData),
                                       icon: const Icon(Icons.tune),
                                     ),
                                     IconButton(
                                       tooltip: 'Configuracoes',
-                                      onPressed: () =>
-                                          _openSettings(userData),
+                                      onPressed: () => _openSettings(userData),
                                       icon: const Icon(Icons.settings),
                                     ),
                                   ],
@@ -953,14 +969,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             ),
             const SizedBox(height: 12),
             _SettingsAction(
-              icon: Icons.storefront_outlined,
-              title: 'Ativar conta do empreendimento',
-              subtitle: 'Crie perfil de local, responda reviews e promova sua marca.',
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Conta de empreendimento em breve.'),
-                ),
-              ),
+              icon: Icons.account_balance_outlined,
+              title: 'Conta profissional',
+              subtitle:
+                  'Ative um perfil para seu estabelecimento, marca ou conteúdo.',
+              onTap: () async {
+                await Navigator.pushNamed(
+                  context,
+                  RouteNames.professionalAccount,
+                );
+              },
             ),
             const SizedBox(height: 28),
             SizedBox(

@@ -1,7 +1,7 @@
 
 class AppConfig {
   static const String backendUrl =
-      String.fromEnvironment('BACKEND_URL', defaultValue: '');
+    'https://aeon-backend-deploy.onrender.com';
 
   static const String openWeatherKey =
       String.fromEnvironment('OPENWEATHER_KEY', defaultValue: '');

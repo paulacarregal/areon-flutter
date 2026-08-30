@@ -18,6 +18,7 @@ import 'features/notifications/notification_service.dart';
 import 'features/profile/presentation/quiz_provider.dart';
 import 'features/recommendations/presentation/ai_recommendation_provider.dart';
 import 'features/weather/presentation/weather_provider.dart';
+import 'core/backend/backend_api_service.dart';
 
 
 void main() async {
@@ -27,13 +28,24 @@ void main() async {
   metrics.init();
   log.info('App', 'starting');
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  log.info('App', 'Firebase initialized');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    log.info('App', 'Firebase initialized');
 
   await _activateAppCheck();
 
+  try {
+    final health = await BackendApiService().getHealth();
+    log.info('Backend', 'Health check successful', extra: health);
+  } catch (error, stackTrace) {
+    log.error(
+      'Backend',
+      'Health check failed',
+      error: error,
+      stack: stackTrace,
+    );
+  }
   final bool supportsPush = !kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
@@ -74,35 +86,50 @@ Future<void> _activateAppCheck() async {
   try {
     if (kIsWeb) {
       if (recaptchaSiteKey.isEmpty) {
-        log.warn('AppCheck', 'RECAPTCHA_V3_SITE_KEY not configured for web');
+        log.warn(
+          'AppCheck',
+          'RECAPTCHA_V3_SITE_KEY not configured for web',
+        );
         return;
       }
 
       await FirebaseAppCheck.instance.activate(
-        webProvider: ReCaptchaV3Provider(recaptchaSiteKey),
+        providerWeb: ReCaptchaV3Provider(recaptchaSiteKey),
       );
+
       log.info('AppCheck', 'activated for web');
       return;
     }
 
-    final supportsAppCheck = defaultTargetPlatform == TargetPlatform.android ||
+    final supportsAppCheck =
+        defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS;
 
     if (!supportsAppCheck) {
-      log.warn('AppCheck', 'platform not supported for App Check activation');
+      log.warn(
+        'AppCheck',
+        'platform not supported for App Check activation',
+      );
       return;
     }
 
     await FirebaseAppCheck.instance.activate(
-      androidProvider:
-          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-      appleProvider: kDebugMode
-          ? AppleProvider.debug
-          : AppleProvider.appAttestWithDeviceCheckFallback,
+      providerAndroid: kDebugMode
+          ? const AndroidDebugProvider()
+          : const AndroidPlayIntegrityProvider(),
+      providerApple: kDebugMode
+          ? const AppleDeviceCheckProvider()
+          : const AppleAppAttestWithDeviceCheckFallbackProvider(),
     );
+
     log.info('AppCheck', 'activated');
   } catch (e, st) {
-    log.error('AppCheck', 'activation failed', error: e, stack: st);
+    log.error(
+      'AppCheck',
+      'activation failed',
+      error: e,
+      stack: st,
+    );
   }
 }

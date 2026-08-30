@@ -11,6 +11,7 @@ import '../../features/profile/presentation/perfil_screen.dart';
 import '../../features/profile/presentation/profile_quiz_screen.dart';
 import '../../features/feed/presentation/post_detail_screen.dart';
 import '../../features/map/presentation/maps_screen.dart';
+import '../../features/professional/presentation/professional_account_screen.dart';
 
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
@@ -24,5 +25,6 @@ class AppRoutes {
     RouteNames.profile:    (_) => const ProfileScreen(),
     RouteNames.maps:       (_) => const MapsScreen(),
     RouteNames.postDetail: (_) => const PostDetailScreen(),
+    RouteNames.professionalAccount: (_) => const ProfessionalAccountScreen(),
   };
 }

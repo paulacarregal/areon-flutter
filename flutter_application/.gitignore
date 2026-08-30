@@ -44,8 +44,29 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# secrets
+# Environment / secrets
 .env
+.env.*
+!.env.example
+
+# Server credentials
+serviceAccount.json
+firebase-adminsdk-*.json
+google-credentials.json
+*-service-account.json
+
+# Private keys / certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local secret directories
+secrets/
+.secret/
+
+# Firebase local cache/config
+.firebase/
 
 # Local macOS Firebase file. Android/Web/iOS Firebase config is part of the
 # academic delivery so the app runs against the same project used in the MVP.

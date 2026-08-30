@@ -9,4 +9,5 @@ class RouteNames {
   static const String favorites  = '/favorites';
   static const String profile    = '/profile';
   static const String postDetail = '/post-detail';
+  static const String professionalAccount = '/professional-account';
 }

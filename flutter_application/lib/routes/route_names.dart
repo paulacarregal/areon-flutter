@@ -23,4 +23,7 @@ class RouteNames {
 
   static const favorites = '/favorites';
   static const profile = '/profile';
+
+  static const professionalAccount = '/professional-account';
+  
 }

@@ -13,6 +13,8 @@ import '../routes/route_names.dart';
 import '../screens/favoritos_screen.dart';
 import '../screens/perfil_screen.dart';
 
+import '../../features/professional/presentation/professional_account_screen.dart';
+
 
 
 class AppRoutes {
@@ -30,6 +32,9 @@ class AppRoutes {
     RouteNames.favorites: (_) => const FavoritesScreen(),
     RouteNames.profile: (_) => const ProfileScreen(),
     RouteNames.maps: (_) => const MapsScreen(),
+
+    RouteNames.professionalAccount:
+    (_) => const ProfessionalAccountScreen(),
 
   };
 }
