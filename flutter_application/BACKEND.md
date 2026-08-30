@@ -1,52 +1,52 @@
 # 🔧 Backend Spring Boot — AEON
 
-O backend do AEON foi desenvolvido utilizando **Java e Spring Boot**, seguindo uma arquitetura REST para disponibilizar dados estruturados à aplicação e ao dashboard administrativo.
+O backend do **AEON** foi desenvolvido em **Java com Spring Boot** e é responsável por disponibilizar uma API REST para o gerenciamento e a integração dos dados utilizados pela plataforma.
 
-A solução utiliza integração com **Firebase**, persistência de dados, operações CRUD, mecanismos de segurança e documentação através do Swagger/OpenAPI.
+A aplicação centraliza operações relacionadas aos usuários e aos perfis profissionais, além de integrar serviços como **Firebase**, **MySQL** e **Swagger/OpenAPI**.
 
 ---
 
-# 1. Objetivo
+## 🎯 Objetivo
 
-O backend tem como objetivo centralizar o acesso e gerenciamento dos dados utilizados pela plataforma AEON.
+O backend tem como objetivo centralizar o acesso e o gerenciamento dos dados da plataforma AEON.
 
 Entre suas principais responsabilidades estão:
 
-* Disponibilizar uma API REST;
+* Disponibilizar endpoints REST;
 * Gerenciar usuários;
 * Gerenciar perfis profissionais;
 * Executar operações CRUD;
-* Integrar serviços externos;
 * Persistir dados;
-* Validar informações recebidas;
+* Integrar serviços externos;
+* Validar informações;
 * Tratar erros;
-* Controlar acesso;
+* Controlar o acesso aos recursos;
 * Disponibilizar documentação interativa da API.
 
 ---
 
-# 2. Tecnologias
+## 🧩 Tecnologias
 
-| Tecnologia              | Utilização                     |
-| ----------------------- | ------------------------------ |
-| Java 17                 | Linguagem principal            |
-| Spring Boot             | Framework principal            |
-| Spring MVC              | Desenvolvimento da API REST    |
-| Spring Data JPA         | Persistência                   |
-| Hibernate               | ORM                            |
-| MySQL                   | Banco de dados                 |
-| Spring Security         | Segurança e controle de acesso |
-| Firebase Admin SDK      | Integração com Firebase        |
-| Firebase Authentication | Autenticação dos usuários      |
-| Swagger / OpenAPI       | Documentação da API            |
-| Maven                   | Gerenciamento de dependências  |
-| Render                  | Hospedagem                     |
+| Tecnologia              | Utilização                             |
+| ----------------------- | -------------------------------------- |
+| Java 17                 | Linguagem principal                    |
+| Spring Boot             | Framework principal                    |
+| Spring MVC              | Desenvolvimento da API REST            |
+| Spring Data JPA         | Persistência de dados                  |
+| Hibernate               | ORM                                    |
+| MySQL                   | Banco de dados                         |
+| Spring Security         | Segurança e controle de acesso         |
+| Firebase Admin SDK      | Integração administrativa com Firebase |
+| Firebase Authentication | Gerenciamento de usuários              |
+| Swagger / OpenAPI       | Documentação da API                    |
+| Maven                   | Gerenciamento de dependências          |
+| Render                  | Hospedagem do backend                  |
 
 ---
 
-# 3. Arquitetura
+## 🏗️ Arquitetura
 
-O backend segue uma separação por responsabilidades:
+O backend segue uma organização baseada na separação de responsabilidades entre suas principais camadas:
 
 ```text
 Controller
@@ -61,25 +61,31 @@ Repository
 Database
 ```
 
-Além disso, a integração com Firebase é realizada através da configuração específica do projeto:
+De forma geral, o fluxo de uma requisição ocorre da seguinte maneira:
+
+1. O **Controller** recebe a requisição HTTP;
+2. O **Service** executa as regras de negócio;
+3. O **Repository** realiza a comunicação com a camada de persistência;
+4. Os dados são armazenados ou consultados no banco de dados.
+
+Além disso, o backend integra serviços externos por meio de configurações específicas, como o **Firebase Admin SDK**.
 
 ```text
-Spring Boot
-    │
-    ├── Firebase Admin SDK
-    │       └── Firebase
-    │
-    └── Spring Data JPA
-            └── MySQL
+                    Spring Boot
+                         │
+             ┌───────────┴───────────┐
+             ▼                       ▼
+      Firebase Admin SDK       Spring Data JPA
+             │                       │
+             ▼                       ▼
+         Firebase                   MySQL
 ```
-
-Essa organização permite separar as responsabilidades da aplicação e facilitar a manutenção e evolução do sistema.
 
 ---
 
-# 4. Estrutura
+## 📁 Estrutura do Projeto
 
-A estrutura principal do backend é organizada da seguinte forma:
+A estrutura principal do backend está organizada da seguinte forma:
 
 ```text
 src/
@@ -97,7 +103,7 @@ src/
 
 ### `config`
 
-Contém configurações necessárias para a inicialização dos serviços utilizados pela aplicação.
+Contém as configurações necessárias para a inicialização e integração dos serviços utilizados pela aplicação.
 
 Um dos principais componentes é:
 
@@ -105,11 +111,11 @@ Um dos principais componentes é:
 FirebaseConfig.java
 ```
 
-Responsável pela inicialização da integração com o Firebase Admin SDK.
+Essa classe é responsável pela configuração e inicialização da integração com o Firebase Admin SDK.
 
 ### `controller`
 
-Contém os endpoints REST disponibilizados pela aplicação.
+Contém os controladores responsáveis pelos endpoints REST da aplicação.
 
 Exemplos:
 
@@ -120,7 +126,7 @@ ProfessionalProfileController.java
 
 ### `model`
 
-Contém as entidades utilizadas na aplicação.
+Contém as entidades e modelos utilizados pela aplicação.
 
 Exemplo:
 
@@ -130,19 +136,19 @@ ProfessionalProfile.java
 
 ### `repository`
 
-Responsável pela comunicação entre as entidades e a camada de persistência.
+Responsável pela comunicação com a camada de persistência, utilizando o Spring Data JPA.
 
 ### `service`
 
-Concentra regras de negócio e operações realizadas sobre os dados.
+Concentra as regras de negócio e as operações realizadas sobre os dados.
 
 ---
 
-# 5. Firebase
+## 🔥 Integração com Firebase
 
-A integração com Firebase é realizada através do Firebase Admin SDK.
+O backend utiliza o **Firebase Admin SDK** para integração com os serviços administrativos do Firebase.
 
-A configuração utiliza as credenciais disponibilizadas através da variável de ambiente:
+A configuração utiliza credenciais disponibilizadas por meio da variável de ambiente:
 
 ```text
 GOOGLE_APPLICATION_CREDENTIALS
@@ -154,17 +160,15 @@ A inicialização é realizada pela classe:
 FirebaseConfig.java
 ```
 
-O backend verifica se o Firebase já foi inicializado antes de criar uma nova instância.
-
-A utilização do Firebase Admin SDK permite que o servidor interaja de forma segura com os serviços Firebase.
+O Firebase Admin SDK permite que o servidor realize operações administrativas relacionadas aos serviços Firebase sem expor credenciais administrativas aos aplicativos clientes.
 
 ---
 
-# 6. Usuários
+## 👤 Usuários
 
-O endpoint de usuários disponibiliza informações dos usuários cadastrados no Firebase Authentication.
+O backend disponibiliza um endpoint para consulta dos usuários cadastrados no Firebase Authentication.
 
-Endpoint:
+### Listar usuários
 
 ```http
 GET /api/users
@@ -183,33 +187,31 @@ Exemplo de resposta:
 ]
 ```
 
-As informações são obtidas através do Firebase Authentication utilizando o Firebase Admin SDK.
+As informações são obtidas por meio do Firebase Authentication utilizando o Firebase Admin SDK.
 
 ---
 
-# 7. Perfis profissionais
+# 💼 Perfis Profissionais
 
-Os perfis profissionais são armazenados e gerenciados através da API REST.
+Os perfis profissionais são gerenciados pela API REST e persistidos no banco de dados da aplicação.
 
-Endpoint principal:
+Endpoint base:
 
 ```text
 /api/professional-profiles
 ```
 
----
-
-## 7.1 Listar perfis
+## Listar perfis
 
 ```http
 GET /api/professional-profiles
 ```
 
-Retorna todos os perfis profissionais cadastrados.
+Retorna os perfis profissionais cadastrados.
 
 ---
 
-## 7.2 Buscar perfil
+## Buscar perfil por ID
 
 ```http
 GET /api/professional-profiles/{id}
@@ -217,19 +219,19 @@ GET /api/professional-profiles/{id}
 
 Exemplo:
 
-```text
+```http
 GET /api/professional-profiles/1
 ```
 
 ---
 
-## 7.3 Criar perfil
+## Criar perfil
 
 ```http
 POST /api/professional-profiles
 ```
 
-Exemplo de corpo:
+Exemplo de corpo da requisição:
 
 ```json
 {
@@ -250,7 +252,7 @@ Exemplo de corpo:
 
 ---
 
-## 7.4 Atualizar perfil
+## Atualizar perfil
 
 ```http
 PUT /api/professional-profiles/{id}
@@ -258,13 +260,13 @@ PUT /api/professional-profiles/{id}
 
 Exemplo:
 
-```text
+```http
 PUT /api/professional-profiles/1
 ```
 
 ---
 
-## 7.5 Excluir perfil
+## Excluir perfil
 
 ```http
 DELETE /api/professional-profiles/{id}
@@ -272,15 +274,15 @@ DELETE /api/professional-profiles/{id}
 
 Exemplo:
 
-```text
+```http
 DELETE /api/professional-profiles/1
 ```
 
 ---
 
-# 8. Modelo ProfessionalProfile
+## 🗃️ Modelo `ProfessionalProfile`
 
-A entidade de perfil profissional possui os seguintes campos:
+A entidade `ProfessionalProfile` possui os seguintes campos:
 
 | Campo         | Descrição                     |
 | ------------- | ----------------------------- |
@@ -293,7 +295,7 @@ A entidade de perfil profissional possui os seguintes campos:
 | `description` | Descrição profissional        |
 | `phone`       | Telefone                      |
 | `website`     | Site                          |
-| `instagram`   | Instagram                     |
+| `instagram`   | Perfil do Instagram           |
 | `city`        | Cidade                        |
 | `address`     | Endereço                      |
 | `status`      | Status da verificação         |
@@ -301,46 +303,37 @@ A entidade de perfil profissional possui os seguintes campos:
 
 ---
 
-# 9. CRUD
+## 🔄 Operações CRUD
 
-A API disponibiliza operações completas de gerenciamento dos perfis profissionais.
+A API disponibiliza as operações básicas de gerenciamento dos perfis profissionais:
 
-```text
-CREATE
-POST /api/professional-profiles
+| Operação      | Método   | Endpoint                          |
+| ------------- | -------- | --------------------------------- |
+| Criar         | `POST`   | `/api/professional-profiles`      |
+| Listar        | `GET`    | `/api/professional-profiles`      |
+| Buscar por ID | `GET`    | `/api/professional-profiles/{id}` |
+| Atualizar     | `PUT`    | `/api/professional-profiles/{id}` |
+| Excluir       | `DELETE` | `/api/professional-profiles/{id}` |
 
-READ
-GET /api/professional-profiles
-GET /api/professional-profiles/{id}
-
-UPDATE
-PUT /api/professional-profiles/{id}
-
-DELETE
-DELETE /api/professional-profiles/{id}
-```
-
-Essas operações permitem que o dashboard administrativo consulte e gerencie os dados diretamente através da API.
+Essas operações podem ser utilizadas pelos clientes da API para consultar e gerenciar os dados dos perfis profissionais.
 
 ---
 
-# 10. Segurança
+## 🔒 Segurança
 
 A aplicação utiliza **Spring Security** como camada de segurança do backend.
 
-A estrutura permite controlar o acesso aos recursos da API e estabelecer uma camada de proteção entre os clientes e os serviços disponibilizados.
+A estrutura do projeto foi preparada para controlar o acesso aos recursos da API e possibilitar a integração com mecanismos de autenticação e autorização.
 
-A arquitetura também foi preparada para integração com mecanismos de autenticação e autorização relacionados ao Firebase.
-
-O uso do Firebase Admin SDK permite que operações administrativas relacionadas ao Firebase sejam executadas pelo servidor, sem expor credenciais administrativas ao aplicativo cliente.
+O Firebase Admin SDK é utilizado exclusivamente no ambiente do servidor para operações administrativas relacionadas ao Firebase.
 
 ---
 
-# 11. Tratamento de erros
+## ⚠️ Tratamento de Erros
 
-As operações da API possuem tratamento de exceções para evitar que falhas internas sejam expostas diretamente ao cliente.
+A API possui tratamento de exceções para evitar a exposição direta de informações internas do sistema.
 
-Por exemplo, a consulta de usuários retorna uma resposta de erro apropriada quando ocorre uma falha na comunicação com o Firebase.
+Quando ocorre uma falha durante uma operação, o backend pode retornar uma resposta estruturada ao cliente.
 
 Exemplo:
 
@@ -350,15 +343,15 @@ Exemplo:
 }
 ```
 
-Essa abordagem fornece feedback estruturado para os consumidores da API.
+Essa abordagem facilita a identificação de problemas pelos consumidores da API.
 
 ---
 
-# 12. Swagger / OpenAPI
+## 📚 Swagger / OpenAPI
 
-A API possui documentação interativa através do Swagger.
+A API possui documentação interativa utilizando **Swagger/OpenAPI**.
 
-Após iniciar o backend, a documentação pode ser acessada em:
+Após iniciar o backend, a documentação pode ser acessada pelo endereço:
 
 ```text
 /swagger-ui/index.html
@@ -372,169 +365,109 @@ https://aeon-backend-deploy.onrender.com/swagger-ui/index.html
 
 O Swagger permite:
 
-* Visualizar os endpoints;
-* Consultar métodos HTTP;
+* Visualizar os endpoints disponíveis;
+* Consultar os métodos HTTP;
 * Visualizar parâmetros;
-* Visualizar estruturas de requisição;
-* Visualizar respostas;
+* Consultar estruturas de requisição e resposta;
 * Executar requisições diretamente pela interface.
 
 ---
 
-# 13. Backend em produção
+## ☁️ Ambiente Publicado
 
-O backend está publicado no Render:
+O backend está hospedado no **Render**.
+
+### API
 
 ```text
 https://aeon-backend-deploy.onrender.com
 ```
 
-A API pode ser acessada através dos endpoints:
+### Endpoints disponíveis
 
 ```text
-https://aeon-backend-deploy.onrender.com/api/users
+GET /api/users
 ```
 
 ```text
-https://aeon-backend-deploy.onrender.com/api/professional-profiles
+GET /api/professional-profiles
 ```
+
+O serviço publicado permite que diferentes aplicações e ambientes da equipe consumam a mesma API.
+
+> **Observação:** dependendo da configuração do ambiente de hospedagem, a primeira requisição após um período de inatividade pode apresentar um tempo maior de resposta.
 
 ---
 
-# 14. Inicialização do serviço no Render
+## ▶️ Execução Local
 
-Como o serviço pode entrar em estado de espera após um período sem utilização, a primeira requisição pode apresentar um pequeno tempo de resposta enquanto a aplicação é inicializada.
-
-Para iniciar o serviço antes de utilizar o dashboard, recomenda-se acessar:
-
-```text
-https://aeon-backend-deploy.onrender.com/swagger-ui/index.html
-```
-
-Após o carregamento do Swagger, os endpoints podem ser consultados:
-
-```text
-https://aeon-backend-deploy.onrender.com/api/users
-```
-
-```text
-https://aeon-backend-deploy.onrender.com/api/professional-profiles
-```
-
-Depois que a API estiver respondendo normalmente, o dashboard Angular poderá consumir os dados normalmente.
-
----
-
-# 15. Integração com Angular
-
-O dashboard administrativo utiliza `HttpClient` para consumir a API.
-
-Exemplo de configuração:
-
-```typescript
-private readonly apiUrl =
-  'https://aeon-backend-deploy.onrender.com/api/users';
-```
-
-A consulta dos usuários é realizada através de:
-
-```typescript
-getAll(): Observable<User[]> {
-  return this.http.get<User[]>(this.apiUrl);
-}
-```
-
-Os perfis profissionais utilizam o mesmo princípio:
-
-```typescript
-private readonly apiUrl =
-  'https://aeon-backend-deploy.onrender.com/api/professional-profiles';
-```
-
-Dessa forma, o Angular funciona como cliente da mesma API REST disponibilizada pelo backend.
-
----
-
-# 16. Integração com o Dashboard
-
-O dashboard administrativo apresenta os dados obtidos pela API através de:
-
-* Serviços Angular;
-* `HttpClient`;
-* Data Binding;
-* `ngFor`;
-* `ngIf`;
-* `ngModel`;
-* Formulários;
-* Filtros;
-* Operações CRUD.
-
-As informações são carregadas diretamente do backend, permitindo que o administrador trabalhe com os dados armazenados na plataforma.
-
----
-
-# 17. Execução local
-
-Para executar o backend localmente:
+Acesse o diretório do backend:
 
 ```bash
 cd aeon-backend
 ```
 
-Depois:
+### Utilizando Maven
 
 ```bash
 mvn spring-boot:run
 ```
 
-Ou no Windows:
+### Utilizando Maven Wrapper
+
+No Windows:
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-Após a inicialização, o endereço da API dependerá da porta configurada no projeto.
+No Linux ou macOS:
 
----
-
-# 18. Fluxo completo
-
-O fluxo de comunicação entre os componentes pode ser representado da seguinte forma:
-
-```text
-             ┌──────────────────────┐
-             │   Dashboard Angular  │
-             └──────────┬───────────┘
-                        │
-                        │ HTTP / REST
-                        ▼
-             ┌──────────────────────┐
-             │   Spring Boot API    │
-             │                      │
-             │ Controllers          │
-             │ Services             │
-             │ Security             │
-             └──────────┬───────────┘
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-              ▼                   ▼
-       ┌─────────────┐     ┌─────────────┐
-       │    MySQL    │     │   Firebase  │
-       │             │     │             │
-       │ Perfis      │     │ Usuários    │
-       │ Profissionais│    │ Auth        │
-       └─────────────┘     └─────────────┘
+```bash
+./mvnw spring-boot:run
 ```
 
-Esse fluxo permite que o dashboard administrativo consuma uma API centralizada e que os dados sejam disponibilizados de forma estruturada.
+Após a inicialização, a API estará disponível na porta configurada no projeto.
 
 ---
 
-# 19. Considerações finais
+## 🔗 Fluxo de Integração
 
-A implementação do backend Spring Boot proporciona ao AEON uma camada de serviços centralizada, organizada e preparada para evolução.
+O backend funciona como uma camada central de comunicação entre os clientes da plataforma e os serviços utilizados pela aplicação.
 
-A combinação entre **Spring Boot, Spring Security, Firebase, MySQL, Swagger e Angular** permite estruturar uma solução que separa a interface administrativa das regras e dados da aplicação.
+```text
+       ┌──────────────────────┐
+       │  Clientes da AEON    │
+       │                      │
+       │ Flutter / Angular    │
+       └──────────┬───────────┘
+                  │
+                  │ HTTP / REST
+                  ▼
+       ┌──────────────────────┐
+       │   Spring Boot API    │
+       │                      │
+       │ Controllers          │
+       │ Services             │
+       │ Security             │
+       └──────────┬───────────┘
+                  │
+         ┌────────┴────────┐
+         ▼                 ▼
+  ┌─────────────┐   ┌─────────────┐
+  │    MySQL    │   │   Firebase  │
+  │             │   │             │
+  │ Perfis e    │   │ Usuários e  │
+  │ dados       │   │ serviços    │
+  └─────────────┘   └─────────────┘
+```
 
-A disponibilização do backend em ambiente de nuvem também permite que diferentes máquinas consumam a mesma API, evitando a dependência de um servidor local específico.
+---
+
+## 📌 Considerações Finais
+
+O backend Spring Boot fornece uma camada centralizada para o gerenciamento e disponibilização dos dados da plataforma AEON.
+
+A utilização de **Spring Boot**, **Spring Security**, **Spring Data JPA**, **MySQL** e **Firebase** permite estruturar uma API organizada e preparada para evolução.
+
+A documentação por meio do **Swagger/OpenAPI** facilita a consulta e o teste dos endpoints disponíveis, enquanto a publicação do serviço em nuvem permite a integração entre os diferentes componentes do projeto.

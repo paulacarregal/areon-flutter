@@ -1,44 +1,47 @@
-# 🚀 Como executar o AEON
+# 🚀 Como Executar o AEON
 
-Este documento apresenta o procedimento recomendado para executar o projeto AEON, contemplando o aplicativo Flutter, o backend Spring Boot e o dashboard administrativo Angular.
+Este documento apresenta os procedimentos necessários para executar os principais componentes do projeto AEON:
+
+* Aplicativo Flutter;
+* Backend Spring Boot;
+* Dashboard administrativo Angular.
 
 ---
 
-# 1. Pré-requisitos
+## 1. Pré-requisitos
 
-Antes de executar o projeto, certifique-se de possuir:
+Antes de iniciar, verifique se as seguintes ferramentas estão instaladas:
 
 * Flutter SDK;
 * Dart SDK compatível com o projeto;
-* Android Studio ou VS Code;
 * Java JDK 17;
-* Maven;
-* Node.js;
-* npm;
+* Node.js e npm;
 * Angular CLI;
 * Git;
-* Navegador Edge ou Chrome;
-* Emulador Android ou dispositivo físico, caso deseje executar o aplicativo mobile.
+* Android Studio ou VS Code;
+* Chrome ou Microsoft Edge.
 
-Para verificar o ambiente Flutter:
+Para executar o aplicativo mobile em um dispositivo físico ou emulador, também será necessário configurar um ambiente Android compatível.
+
+### Verificar o ambiente Flutter
 
 ```bash
 flutter doctor
 ```
 
-Para verificar o Java:
+### Verificar a versão do Java
 
 ```bash
 java -version
 ```
 
-Para verificar o Node.js:
+### Verificar o Node.js
 
 ```bash
 node -v
 ```
 
-Para verificar o Angular CLI:
+### Verificar o Angular CLI
 
 ```bash
 ng version
@@ -46,9 +49,9 @@ ng version
 
 ---
 
-# 2. Aplicativo Flutter
+## 2. Executar o Aplicativo Flutter
 
-Entre na pasta do aplicativo:
+Acesse a pasta do aplicativo:
 
 ```bash
 cd flutter_application
@@ -66,33 +69,31 @@ Verifique os dispositivos disponíveis:
 flutter devices
 ```
 
----
+### Executar no navegador
 
-## 2.1 Executar no navegador
-
-Para executar o aplicativo utilizando Microsoft Edge:
+Para utilizar o Microsoft Edge:
 
 ```bash
 flutter run -d edge
 ```
 
-Ou utilizando Chrome:
+Ou o Google Chrome:
 
 ```bash
 flutter run -d chrome
 ```
 
----
+> Caso seja necessário utilizar uma API específica, execute o aplicativo com as configurações definidas pelo projeto.
 
-## 2.2 Executar no Android
+### Executar no Android
 
-Com um emulador ou dispositivo conectado:
+Com um emulador ou dispositivo físico conectado:
 
 ```bash
-flutter run -d ID_DO_DEVICE
+flutter run -d ID_DO_DISPOSITIVO
 ```
 
-O identificador do dispositivo pode ser obtido através de:
+O identificador do dispositivo pode ser consultado com:
 
 ```bash
 flutter devices
@@ -100,11 +101,11 @@ flutter devices
 
 ---
 
-# 3. Firebase
+## 3. Configuração do Firebase
 
-O aplicativo utiliza o projeto Firebase configurado para o AEON.
+O aplicativo utiliza arquivos de configuração do Firebase para integração com os serviços utilizados pelo projeto.
 
-Os principais arquivos de configuração utilizados pelo aplicativo são:
+Os principais arquivos são:
 
 ```text
 android/app/google-services.json
@@ -112,94 +113,65 @@ ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 ```
 
-Esses arquivos permitem que o aplicativo utilize os serviços Firebase configurados para o projeto.
-
-Entre os serviços utilizados estão:
-
-* Firebase Authentication;
-* Cloud Firestore;
-* Firebase App Check;
-* Firebase AI Logic.
+Esses arquivos devem estar corretamente configurados para que a aplicação possa utilizar os serviços do Firebase.
 
 ---
 
-# 4. Backend Spring Boot
+## 4. Executar o Backend Spring Boot
 
-Entre na pasta do backend:
+Acesse a pasta do backend:
 
 ```bash
 cd aeon-backend
 ```
 
-O projeto utiliza Java 17 e Maven.
+O projeto utiliza **Java 17** e Maven.
 
-Para executar o backend localmente:
+Para iniciar o backend com o Maven:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Ou, caso esteja utilizando o Maven Wrapper:
+Também é possível utilizar o Maven Wrapper.
 
-```bash
-./mvnw spring-boot:run
-```
-
-No Windows:
+### Windows
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-Após a inicialização, a API estará disponível no endereço configurado pelo projeto.
+### Linux/macOS
+
+```bash
+./mvnw spring-boot:run
+```
+
+Após a inicialização, a API estará disponível no endereço configurado no projeto.
 
 ---
 
-# 5. Backend publicado
+## 5. Backend Publicado
 
-O backend também está disponibilizado em ambiente de nuvem através do Render.
+O backend também está disponível em ambiente de nuvem:
 
-URL principal:
+**https://aeon-backend-deploy.onrender.com**
 
-```text
-https://aeon-backend-deploy.onrender.com
-```
+O dashboard administrativo pode ser configurado para consumir essa versão da API.
 
-O dashboard Angular utiliza essa versão publicada da API.
+### Swagger
 
----
+A documentação interativa da API está disponível em:
 
-# 6. Inicialização do Render
+**https://aeon-backend-deploy.onrender.com/swagger-ui/index.html**
 
-Como o serviço utilizado no Render pode entrar em estado de espera após um período sem utilização, o backend pode apresentar um pequeno tempo de inicialização na primeira requisição.
-
-Para garantir que o serviço esteja ativo antes de utilizar o dashboard, recomenda-se acessar primeiro:
-
-```text
-https://aeon-backend-deploy.onrender.com/swagger-ui/index.html
-```
-
-A abertura da página do Swagger realiza uma chamada ao serviço e permite que o backend seja inicializado.
-
-Depois, pode-se acessar os endpoints principais:
-
-```text
-https://aeon-backend-deploy.onrender.com/api/users
-```
-
-```text
-https://aeon-backend-deploy.onrender.com/api/professional-profiles
-```
-
-Após o backend responder normalmente, o dashboard pode ser aberto.
-
-> **Importante:** esse procedimento é necessário principalmente quando o backend esteve inativo por algum período.
+> O serviço hospedado pode apresentar um tempo maior de resposta na primeira requisição após um período de inatividade.
 
 ---
 
-# 7. Dashboard Angular
+## 6. Executar o Dashboard Angular
 
-Entre na pasta do dashboard:
+Acesse a pasta do dashboard:
 
 ```bash
 cd aeon-angular
@@ -211,13 +183,13 @@ Instale as dependências:
 npm install
 ```
 
-Execute o projeto:
+Inicie a aplicação:
 
 ```bash
 ng serve
 ```
 
-O Angular disponibilizará o dashboard localmente, normalmente em:
+O dashboard normalmente estará disponível em:
 
 ```text
 http://localhost:4200
@@ -225,94 +197,74 @@ http://localhost:4200
 
 ---
 
-# 8. Comunicação com o Backend
+## 7. Comunicação com o Backend
 
-O dashboard Angular está configurado para consumir a API publicada:
+O dashboard Angular realiza requisições HTTP para a API REST.
+
+A URL base publicada é:
 
 ```text
 https://aeon-backend-deploy.onrender.com/api
 ```
 
-Entre os serviços utilizados estão:
+Entre os endpoints utilizados pelo projeto estão:
 
 ```text
 /api/users
 /api/professional-profiles
 ```
 
-O Angular realiza as requisições através do `HttpClient`.
-
-Exemplo:
-
-```typescript
-this.http.get<User[]>(this.apiUrl);
-```
-
 ---
 
-# 9. Ordem recomendada para demonstração
+## 8. Ordem Recomendada para Execução
 
-Para uma apresentação ou avaliação, recomenda-se seguir esta ordem:
+Para facilitar testes e demonstrações, recomenda-se a seguinte sequência:
 
-### 1. Inicializar o backend
+### 1. Verificar o backend
 
-Abrir:
+Acesse a documentação Swagger:
 
 ```text
 https://aeon-backend-deploy.onrender.com/swagger-ui/index.html
 ```
 
-Aguardar o carregamento do Swagger.
+Caso o serviço esteja iniciando após um período de inatividade, aguarde o carregamento da página.
 
-### 2. Validar a API
-
-Acessar:
-
-```text
-https://aeon-backend-deploy.onrender.com/api/users
-```
-
-e:
-
-```text
-https://aeon-backend-deploy.onrender.com/api/professional-profiles
-```
-
-### 3. Abrir o dashboard
-
-Executar:
+### 2. Executar o dashboard Angular
 
 ```bash
+cd aeon-angular
 ng serve
 ```
 
-e acessar:
+Depois, acesse:
 
 ```text
 http://localhost:4200
 ```
 
-### 4. Executar o aplicativo
+### 3. Executar o aplicativo Flutter
 
-Na pasta do Flutter:
+No diretório do aplicativo:
 
 ```bash
-flutter run -d edge
+cd flutter_application
+flutter pub get
+flutter run -d chrome
 ```
 
-ou:
+Ou selecione outro dispositivo disponível com:
 
 ```bash
-flutter run -d ID_DO_DEVICE
+flutter devices
 ```
 
 ---
 
-# 10. Observações
+## 9. Observações
 
-* O backend publicado permite que diferentes máquinas consumam a mesma API.
-* O dashboard não depende de um backend executando exclusivamente na máquina de um integrante.
-* O Firebase utilizado pelo aplicativo corresponde ao ambiente configurado para o projeto.
-* O Render pode apresentar um pequeno atraso na primeira requisição após um período de inatividade.
-* O Swagger pode ser utilizado como ponto inicial para ativar e verificar o backend.
-* O aplicativo Flutter e o dashboard Angular podem ser executados independentemente, desde que os serviços necessários estejam disponíveis.
+* O backend publicado permite que diferentes máquinas utilizem a mesma API;
+* O Flutter e o dashboard Angular podem ser executados separadamente;
+* O Firebase deve estar corretamente configurado para os recursos que dependem de seus serviços;
+* O backend hospedado pode apresentar uma resposta inicial mais lenta após períodos de inatividade;
+* O Swagger pode ser utilizado para verificar a disponibilidade da API.
